@@ -161,6 +161,8 @@ export type Database = {
           full_name: string | null
           id: string
           role: string | null
+          role_id: string | null
+          status: string | null
           sub_tenant_id: string | null
           tenant_id: string | null
           updated_at: string | null
@@ -170,6 +172,8 @@ export type Database = {
           full_name?: string | null
           id: string
           role?: string | null
+          role_id?: string | null
+          status?: string | null
           sub_tenant_id?: string | null
           tenant_id?: string | null
           updated_at?: string | null
@@ -179,11 +183,20 @@ export type Database = {
           full_name?: string | null
           id?: string
           role?: string | null
+          role_id?: string | null
+          status?: string | null
           sub_tenant_id?: string | null
           tenant_id?: string | null
           updated_at?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "profiles_role_id_fkey"
+            columns: ["role_id"]
+            isOneToOne: false
+            referencedRelation: "roles"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "profiles_sub_tenant_id_fkey"
             columns: ["sub_tenant_id"]
@@ -199,6 +212,30 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      roles: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          name: string
+          permissions: Json | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name: string
+          permissions?: Json | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name?: string
+          permissions?: Json | null
+        }
+        Relationships: []
       }
       sacraments: {
         Row: {
