@@ -84,6 +84,12 @@ function App() {
     }
   }, [profile?.role]);
 
+  const { kpis: dynamicKpis } = useDashboardKPIs({
+    level: currentLevel,
+    tenantId: activeTenant?.id,
+    subTenantId: undefined,
+  });
+
   const renderDashboard = () => {
     switch (currentLevel) {
       case 'super':
