@@ -17,6 +17,7 @@ import toast from 'react-hot-toast';
 import { ignisApi } from '../services/api';
 import type { Appointment } from '../services/api';
 import { useTenant } from '../contexts/TenantContext';
+import { useRealtimeSubscription } from '../hooks/useRealtimeSubscription';
 import { AppointmentModal } from './AppointmentModal';
 import './PriestAgenda.css';
 
