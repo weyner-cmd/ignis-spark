@@ -183,9 +183,17 @@ export const FielHome: React.FC = () => {
         <h3>Minha Jornada de Fé</h3>
         <div className="journey-grid">
           {journeyItems.map((item) => (
-            <div
+            <button
               key={item.type}
+              type="button"
               className={`journey-item glass ${item.completed ? '' : 'pending'}`}
+              onClick={() => {
+                if (item.completed) {
+                  toast.success(`${item.label} já recebido! ✝️`);
+                } else {
+                  toast(`Procure a secretaria para iniciar o processo de ${item.label}.`, { icon: '📋' });
+                }
+              }}
             >
               {item.completed ? (
                 <Award size={20} className="icon-gold" />
@@ -193,7 +201,7 @@ export const FielHome: React.FC = () => {
                 <Plus size={20} />
               )}
               <span>{item.label}</span>
-            </div>
+            </button>
           ))}
         </div>
       </section>
