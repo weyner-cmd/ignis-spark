@@ -10,11 +10,14 @@ import {
   Settings,
   Flame,
   FileBarChart,
-  Globe
+  Globe,
+  Sun,
+  Moon
 } from 'lucide-react';
 import './Sidebar.css';
 
 import { useTenant } from '../contexts/TenantContext';
+import { useTheme } from '../hooks/useTheme';
 
 const navItems = [
   { icon: Home, label: 'Início', id: 'home' },
