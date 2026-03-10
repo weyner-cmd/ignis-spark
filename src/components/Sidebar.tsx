@@ -45,7 +45,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onTabChange, userLe
   });
 
   return (
-    <aside className="sidebar">
+    <aside className={`sidebar ${isOpen ? 'sidebar-open' : ''}`}>
       <div className="sidebar-header">
         <div className="logo-icon">
           <Flame size={20} fill="currentColor" />
