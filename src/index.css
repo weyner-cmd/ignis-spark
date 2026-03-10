@@ -3,17 +3,17 @@
 :root {
   /* ─── Core Palette ─── */
   --primary: #A32121;
-  --primary-light: #c93c3c;
+  --primary-light: #d04545;
   --accent: #D1A84A;
   --accent-color: #D1A84A;
-  --success: #2F6F4E;
-  --background: #1a1a1f;
-  --surface: #252530;
-  --surface-2: #2e2e3a;
-  --surface-hover: #383845;
-  --border: #3e3e52;
-  --text-primary: #f2f2fa;
-  --text-secondary: #a8a8be;
+  --success: #3a8a60;
+  --background: #18181d;
+  --surface: #22222c;
+  --surface-2: #2c2c38;
+  --surface-hover: #353544;
+  --border: #44445a;
+  --text-primary: #f5f5fc;
+  --text-secondary: #b8b8d0;
 
   /* ─── Status Colors (Missio) ─── */
   --status-confirmed: #2ecc71;
