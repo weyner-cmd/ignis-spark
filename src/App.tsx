@@ -251,10 +251,9 @@ function App() {
                     value={currentLevel}
                     onChange={(e) => setCurrentLevel(e.target.value as Level)}
                   >
-                    <option value="super">Visão Super Admin</option>
-                    <option value="matriz">Visão Paróquia</option>
-                    <option value="comunidade">Visão Comunidade</option>
-                    <option value="fiel">Visão Fiel</option>
+                    {allowedLevels.map((level) => (
+                      <option key={level} value={level}>{levelLabels[level]}</option>
+                    ))}
                   </select>
                 </div>
 
