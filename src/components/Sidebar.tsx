@@ -17,6 +17,7 @@ import { useTenant } from '../contexts/TenantContext';
 
 const navItems = [
   { icon: Home, label: 'Início', id: 'home' },
+  { icon: Calendar, label: 'Agenda do Padre', id: 'priest-agenda' },
   { icon: ScrollText, label: 'Sacramenta', id: 'sacramenta' },
   { icon: MapPin, label: 'Missio', id: 'missio' },
   { icon: Users, label: 'Pastoralis', id: 'pastoralis' },

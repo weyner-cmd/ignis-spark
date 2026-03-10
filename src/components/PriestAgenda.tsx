@@ -14,7 +14,8 @@ import {
 import { format, addDays, startOfDay, endOfDay, isToday, isTomorrow, addWeeks, startOfWeek } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import toast from 'react-hot-toast';
-import { ignisApi, Appointment } from '../services/api';
+import { ignisApi } from '../services/api';
+import type { Appointment } from '../services/api';
 import { useTenant } from '../contexts/TenantContext';
 import { AppointmentModal } from './AppointmentModal';
 import './PriestAgenda.css';

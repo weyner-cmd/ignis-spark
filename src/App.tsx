@@ -17,6 +17,7 @@ import { Breadcrumbs } from './components/Breadcrumbs';
 import { ReportsPanel } from './components/ReportsPanel';
 import { GlobalPastoralMap } from './components/Governance/GlobalPastoralMap';
 import { AppointmentWizard } from './components/AppointmentWizard';
+import { PriestAgenda } from './components/PriestAgenda';
 import {
   Plus,
   Bell,
