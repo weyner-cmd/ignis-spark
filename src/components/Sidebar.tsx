@@ -30,6 +30,7 @@ interface SidebarProps {
   activeTab: string;
   onTabChange: (tabId: string) => void;
   userLevel?: string;
+  isOpen?: boolean;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onTabChange, userLevel }) => {
