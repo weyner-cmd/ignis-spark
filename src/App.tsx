@@ -212,10 +212,16 @@ function App() {
         return (
           <>
             <section className="dashboard-grid">
-              <StatCard label="Triagem Missio" value="3" trend="Urgente" />
-              <StatCard label="Bençãos (Hoje)" value="2" trend="Pendentes" />
-              <StatCard label="Direção Espiritual" value="1" trend="Pe. João" />
-              <StatCard label="Cestas Básicas" value="45" trend="Próxima entrega" />
+              {dynamicKpis.length > 0 ? dynamicKpis.map((k, i) => (
+                <StatCard key={i} label={k.label} value={k.value} trend={k.trend} direction={k.trendDirection} />
+              )) : (
+                <>
+                  <StatCard label="Hoje" value="…" trend="Carregando" />
+                  <StatCard label="Semana" value="…" trend="Carregando" />
+                  <StatCard label="Comparecimento" value="…" trend="Carregando" />
+                  <StatCard label="Pendentes" value="…" trend="Carregando" />
+                </>
+              )}
             </section>
             <LocalTriagem />
           </>
