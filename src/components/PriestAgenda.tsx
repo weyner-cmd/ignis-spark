@@ -83,8 +83,7 @@ export const PriestAgenda: React.FC = () => {
     return filtered;
   }, [appointments, statusFilter, searchTerm]);
 
-  // Filtered KPIs
-  const filteredGetAppointmentForSlot = (time: string): Appointment | undefined => {
+  const getFilteredAppointmentForSlot = (time: string): Appointment | undefined => {
     return filteredAppointments.find(a => {
       const apptTime = new Date(a.startTime);
       const h = String(apptTime.getHours()).padStart(2, '0');
@@ -145,16 +144,6 @@ export const PriestAgenda: React.FC = () => {
     onDelete: () => fetchAppointments(),
   });
 
-  // Match appointment to slot
-  const getAppointmentForSlot = (time: string): Appointment | undefined => {
-    return appointments.find(a => {
-      const apptTime = new Date(a.startTime);
-      const h = String(apptTime.getHours()).padStart(2, '0');
-      const m = String(apptTime.getMinutes()).padStart(2, '0');
-      return `${h}:${m}` === time;
-    });
-  };
-
   // Quick actions
   const handleCheckIn = async (appointment: Appointment) => {
     try {
@@ -198,23 +187,25 @@ export const PriestAgenda: React.FC = () => {
     return '';
   };
 
-  // KPIs
+  // KPIs based on filtered data
   const kpis = {
-    total: appointments.length,
-    confirmed: appointments.filter(a => a.status === 'confirmed').length,
-    completed: appointments.filter(a => a.status === 'completed').length,
-    pending: appointments.filter(a => a.status === 'pending').length,
-    noShow: appointments.filter(a => a.status === 'cancelled').length,
+    total: filteredAppointments.length,
+    confirmed: filteredAppointments.filter(a => a.status === 'confirmed').length,
+    completed: filteredAppointments.filter(a => a.status === 'completed').length,
+    pending: filteredAppointments.filter(a => a.status === 'pending').length,
+    noShow: filteredAppointments.filter(a => a.status === 'cancelled').length,
   };
+
+  const isFiltering = statusFilter !== 'todos' || searchTerm.trim() !== '';
 
   if (!activeTenant) {
     return <div className="agenda-empty"><Calendar size={32} /><span>Nenhuma paróquia ativa</span></div>;
   }
 
   return (
-    <div>
+    <div className="agenda-print-wrapper" ref={printRef}>
       {/* Controls */}
-      <div className="agenda-controls">
+      <div className="agenda-controls no-print">
         <div className="agenda-date-nav">
           <button onClick={() => navigateDate(-1)}><ChevronLeft size={18} /></button>
           <span className="agenda-date-label">
@@ -233,17 +224,48 @@ export const PriestAgenda: React.FC = () => {
           <select
             value={selectedSubTenantId}
             onChange={e => setSelectedSubTenantId(e.target.value)}
-            style={{
-              padding: '6px 12px',
-              borderRadius: 'var(--radius-sm)',
-              background: 'var(--surface)',
-              border: '1px solid var(--border)',
-              color: 'var(--text-primary)',
-              fontSize: '0.82rem'
-            }}
+            className="agenda-community-select"
           >
             {communities.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
           </select>
+        )}
+      </div>
+
+      {/* Filters Row */}
+      <div className="agenda-filters no-print">
+        <div className="agenda-search">
+          <Search size={16} />
+          <input
+            type="text"
+            placeholder="Buscar por nome do fiel..."
+            value={searchTerm}
+            onChange={e => setSearchTerm(e.target.value)}
+          />
+        </div>
+
+        <div className="agenda-status-filter">
+          <Filter size={14} />
+          <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)}>
+            <option value="todos">Todos os status</option>
+            <option value="confirmed">✅ Confirmado</option>
+            <option value="pending">⏳ Pendente</option>
+            <option value="completed">✔️ Realizado</option>
+            <option value="cancelled">🚫 Cancelado</option>
+          </select>
+        </div>
+
+        <button className="agenda-print-btn" onClick={handlePrint} title="Imprimir agenda">
+          <Printer size={16} />
+          <span>Imprimir</span>
+        </button>
+      </div>
+
+      {/* Print Header */}
+      <div className="print-only print-header">
+        <h2>Agenda Paroquial</h2>
+        <p>{format(selectedDate, "EEEE, d 'de' MMMM 'de' yyyy", { locale: ptBR })}</p>
+        {communities.find(c => c.id === selectedSubTenantId) && (
+          <p>{communities.find(c => c.id === selectedSubTenantId)!.name}</p>
         )}
       </div>
 
@@ -258,7 +280,9 @@ export const PriestAgenda: React.FC = () => {
           ) : (
             <div className="agenda-slots">
               {timeSlots.map(time => {
-                const appt = getAppointmentForSlot(time);
+                const appt = getFilteredAppointmentForSlot(time);
+                if (isFiltering && !appt) return null;
+
                 const endTime = (() => {
                   const [h, m] = time.split(':').map(Number);
                   const total = h * 60 + m + 30;
@@ -282,7 +306,7 @@ export const PriestAgenda: React.FC = () => {
                             {SERVICE_LABELS[appt.serviceType] || appt.serviceType}
                           </div>
                         </div>
-                        <div className="slot-actions">
+                        <div className="slot-actions no-print">
                           {appt.status !== 'completed' && appt.status !== 'cancelled' && (
                             <>
                               <button
@@ -329,6 +353,12 @@ export const PriestAgenda: React.FC = () => {
                   </div>
                 );
               })}
+              {isFiltering && filteredAppointments.length === 0 && (
+                <div className="agenda-empty">
+                  <Search size={28} />
+                  <span>Nenhum agendamento encontrado</span>
+                </div>
+              )}
             </div>
           )}
         </div>
