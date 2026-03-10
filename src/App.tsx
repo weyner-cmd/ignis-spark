@@ -18,6 +18,7 @@ import { ReportsPanel } from './components/ReportsPanel';
 import { GlobalPastoralMap } from './components/Governance/GlobalPastoralMap';
 import { AppointmentWizard } from './components/AppointmentWizard';
 import { PriestAgenda } from './components/PriestAgenda';
+import { useDashboardKPIs } from './hooks/useDashboardKPIs';
 import {
   Plus,
   Bell,
@@ -83,16 +84,28 @@ function App() {
     }
   }, [profile?.role]);
 
+  const { kpis: dynamicKpis } = useDashboardKPIs({
+    level: currentLevel,
+    tenantId: activeTenant?.id,
+    subTenantId: undefined,
+  });
+
   const renderDashboard = () => {
     switch (currentLevel) {
       case 'super':
         return (
           <>
             <section className="dashboard-grid">
-              <StatCard label="Paróquias Ativas" value="12" trend="+2 este mês" />
-              <StatCard label="Total de Fiéis" value="4.2k" trend="12% crescimento" />
-              <StatCard label="Sacramentos (Hoje)" value="28" trend="Normal" />
-              <StatCard label="Uptime Global" value="99.9%" trend="Estável" />
+              {dynamicKpis.length > 0 ? dynamicKpis.map((k, i) => (
+                <StatCard key={i} label={k.label} value={k.value} trend={k.trend} direction={k.trendDirection} />
+              )) : (
+                <>
+                  <StatCard label="Paróquias Ativas" value="…" trend="Carregando" />
+                  <StatCard label="Total de Fiéis" value="…" trend="Carregando" />
+                  <StatCard label="Agendamentos" value="…" trend="Carregando" />
+                  <StatCard label="Sacramentos" value="…" trend="Carregando" />
+                </>
+              )}
             </section>
             <div className="dashboard-sections">
               {activeTab === 'home' && (
@@ -144,10 +157,16 @@ function App() {
         return (
           <>
             <section className="dashboard-grid">
-              <StatCard label="Comunidades" value="8" trend="2 capelas" />
-              <StatCard label="Clero Ativo" value="3" trend="Pe/Diac" />
-              <StatCard label="Missio (Pendente)" value="14" trend="7 urgentes" />
-              <StatCard label="Sacramenta" value="156" trend="Total Ano" />
+              {dynamicKpis.length > 0 ? dynamicKpis.map((k, i) => (
+                <StatCard key={i} label={k.label} value={k.value} trend={k.trend} direction={k.trendDirection} />
+              )) : (
+                <>
+                  <StatCard label="Fiéis" value="…" trend="Carregando" />
+                  <StatCard label="Agendamentos" value="…" trend="Carregando" />
+                  <StatCard label="Realizados" value="…" trend="Carregando" />
+                  <StatCard label="Sacramenta" value="…" trend="Carregando" />
+                </>
+              )}
             </section>
             <div className="dashboard-sections">
               {activeTab === 'home' && (
@@ -193,10 +212,16 @@ function App() {
         return (
           <>
             <section className="dashboard-grid">
-              <StatCard label="Triagem Missio" value="3" trend="Urgente" />
-              <StatCard label="Bençãos (Hoje)" value="2" trend="Pendentes" />
-              <StatCard label="Direção Espiritual" value="1" trend="Pe. João" />
-              <StatCard label="Cestas Básicas" value="45" trend="Próxima entrega" />
+              {dynamicKpis.length > 0 ? dynamicKpis.map((k, i) => (
+                <StatCard key={i} label={k.label} value={k.value} trend={k.trend} direction={k.trendDirection} />
+              )) : (
+                <>
+                  <StatCard label="Hoje" value="…" trend="Carregando" />
+                  <StatCard label="Semana" value="…" trend="Carregando" />
+                  <StatCard label="Comparecimento" value="…" trend="Carregando" />
+                  <StatCard label="Pendentes" value="…" trend="Carregando" />
+                </>
+              )}
             </section>
             <LocalTriagem />
           </>
@@ -329,13 +354,14 @@ function App() {
   );
 }
 
-function StatCard({ label, value, trend }: { label: string, value: string, trend: string }) {
+function StatCard({ label, value, trend, direction }: { label: string; value: string; trend: string; direction?: 'up' | 'down' | 'neutral' }) {
+  const trendClass = direction === 'down' ? 'trend-down' : 'trend-up';
   return (
     <div className="stat-card">
       <div className="stat-label">{label}</div>
       <div className="stat-value">{value}</div>
-      <div className="stat-trend trend-up">
-        {trend.includes('mês') || trend.includes('%') ? <TrendingUp size={14} /> : <Activity size={14} />}
+      <div className={`stat-trend ${trendClass}`}>
+        {direction === 'down' ? <TrendingUp size={14} style={{ transform: 'rotate(180deg)' }} /> : direction === 'up' ? <TrendingUp size={14} /> : <Activity size={14} />}
         <span>{trend}</span>
       </div>
     </div>
