@@ -40,7 +40,7 @@ interface SidebarProps {
 
 export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onTabChange, userLevel, isOpen }) => {
   const { activeTenant } = useTenant();
-
+  const { theme, toggleTheme } = useTheme();
   // If active_modules is present, filter. Otherwise show all (default for MVP)
   const filteredNavItems = navItems.filter(item => {
     if (item.id === 'home') return true;
