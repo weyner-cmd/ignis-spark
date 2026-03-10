@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { Flame, Loader2, UserPlus, LogIn } from 'lucide-react';
+import { Flame, Loader2, UserPlus, LogIn, Eye, EyeOff } from 'lucide-react';
 import './Login.css';
 
 export const Login: React.FC = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [fullName, setFullName] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [mode, setMode] = useState<'login' | 'signup'>('login');
     const [message, setMessage] = useState('');
@@ -72,16 +73,39 @@ export const Login: React.FC = () => {
                             required
                         />
                     </div>
-                    <div className="form-group">
+                    <div className="form-group" style={{ position: 'relative' }}>
                         <label>Senha</label>
-                        <input
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            placeholder="••••••••"
-                            required
-                            minLength={6}
-                        />
+                        <div style={{ position: 'relative' }}>
+                            <input
+                                type={showPassword ? 'text' : 'password'}
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                placeholder="••••••••"
+                                required
+                                minLength={6}
+                                style={{ paddingRight: '2.5rem' }}
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                style={{
+                                    position: 'absolute',
+                                    right: '0.75rem',
+                                    top: '50%',
+                                    transform: 'translateY(-50%)',
+                                    background: 'none',
+                                    border: 'none',
+                                    cursor: 'pointer',
+                                    color: 'var(--text-muted, #888)',
+                                    padding: '0.25rem',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                }}
+                                aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
+                            >
+                                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                            </button>
+                        </div>
                     </div>
                     <button type="submit" className="btn-primary-action" disabled={isLoading}>
                         {isLoading ? <Loader2 className="animate-spin" /> : (
