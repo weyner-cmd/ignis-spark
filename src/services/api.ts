@@ -447,7 +447,7 @@ export const ignisApi = {
                 .single();
 
             if (error) throw error;
-            return result as Person;
+            return result as unknown as Person;
         },
         search: async (tenantId: string, query: string) => {
             const { data, error } = await supabase
