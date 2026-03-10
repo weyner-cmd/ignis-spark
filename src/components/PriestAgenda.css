@@ -332,4 +332,201 @@
   .slot-actions {
     opacity: 1;
   }
+  .agenda-filters {
+    flex-direction: column;
+  }
+  .agenda-search {
+    width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .agenda-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .agenda-date-nav {
+    justify-content: center;
+  }
+  .agenda-quick-btns {
+    justify-content: center;
+  }
+  .agenda-slot {
+    padding: 12px 10px;
+    gap: 8px;
+  }
+  .slot-time {
+    min-width: 80px;
+    font-size: 0.75rem;
+  }
+  .slot-action-btn {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
+    font-size: 0.9rem;
+  }
+  .slot-actions {
+    opacity: 1;
+    gap: 6px;
+  }
+  .agenda-sidebar {
+    order: -1;
+  }
+}
+
+/* ─── Filters Row ─── */
+.agenda-filters {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.agenda-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 6px 12px;
+  flex: 1;
+  min-width: 180px;
+  max-width: 320px;
+  color: var(--text-secondary);
+}
+
+.agenda-search input {
+  border: none;
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 0.82rem;
+  outline: none;
+  width: 100%;
+}
+
+.agenda-search input::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.6;
+}
+
+.agenda-status-filter {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-secondary);
+}
+
+.agenda-status-filter select {
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.agenda-community-select {
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  font-size: 0.82rem;
+}
+
+.agenda-print-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  font-weight: 500;
+  cursor: pointer;
+  margin-left: auto;
+}
+
+.agenda-print-btn:hover {
+  background: var(--surface-hover);
+  color: var(--text-primary);
+}
+
+/* ─── Print Styles ─── */
+.print-only {
+  display: none;
+}
+
+.no-print {}
+
+@media print {
+  .no-print,
+  .sidebar,
+  .header-top,
+  .header-bottom {
+    display: none !important;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+
+  .print-header {
+    text-align: center;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #333;
+  }
+
+  .print-header h2 {
+    font-size: 1.4rem;
+    margin: 0 0 4px;
+  }
+
+  .print-header p {
+    font-size: 0.9rem;
+    margin: 2px 0;
+    color: #555;
+  }
+
+  .priest-agenda {
+    flex-direction: column;
+  }
+
+  .agenda-sidebar {
+    width: 100%;
+    page-break-before: avoid;
+  }
+
+  .agenda-slot {
+    border: 1px solid #ccc;
+    background: #fff !important;
+    padding: 6px 10px;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .slot-status-icon {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .agenda-kpi-card {
+    border: 1px solid #ccc;
+    background: #fff !important;
+  }
+
+  .agenda-print-wrapper {
+    padding: 0;
+  }
+
+  body {
+    background: #fff !important;
+  }
 }
