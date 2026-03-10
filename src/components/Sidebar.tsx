@@ -30,9 +30,10 @@ interface SidebarProps {
   activeTab: string;
   onTabChange: (tabId: string) => void;
   userLevel?: string;
+  isOpen?: boolean;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onTabChange, userLevel }) => {
+export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onTabChange, userLevel, isOpen }) => {
   const { activeTenant } = useTenant();
 
   // If active_modules is present, filter. Otherwise show all (default for MVP)
@@ -44,7 +45,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onTabChange, userLe
   });
 
   return (
-    <aside className="sidebar">
+    <aside className={`sidebar ${isOpen ? 'sidebar-open' : ''}`}>
       <div className="sidebar-header">
         <div className="logo-icon">
           <Flame size={20} fill="currentColor" />
