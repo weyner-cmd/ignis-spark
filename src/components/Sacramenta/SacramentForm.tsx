@@ -15,7 +15,7 @@ import './Sacramenta.css';
 
 interface SacramentFormProps {
     tenantId: string;
-    type: 'baptism' | 'marriage' | 'confirmation';
+    type: 'baptism' | 'marriage' | 'confirmation' | 'first_communion' | 'anointing_of_sick';
     onSuccess: (data: Sacrament) => void;
     onCancel: () => void;
 }
