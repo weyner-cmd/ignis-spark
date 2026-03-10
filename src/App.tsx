@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Menu } from 'lucide-react';
 import { Sidebar } from './components/Sidebar';
 import { ParishesTable } from './components/ParishesTable';
@@ -71,6 +71,16 @@ function App() {
   const [sacramentView, setSacramentView] = useState<SacramentType>('baptism');
   const [isWizardOpen, setIsWizardOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  // Update currentLevel when profile loads and current level isn't allowed
+  useEffect(() => {
+    if (profile?.role && !allowedLevels.includes(currentLevel)) {
+      setCurrentLevel(defaultLevel);
+    } else if (profile?.role && currentLevel === 'fiel' && defaultLevel !== 'fiel') {
+      // First load: profile just arrived, upgrade from default 'fiel'
+      setCurrentLevel(defaultLevel);
+    }
+  }, [profile?.role]);
 
   const renderDashboard = () => {
     switch (currentLevel) {
