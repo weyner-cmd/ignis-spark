@@ -114,7 +114,7 @@ export const SacramentForm: React.FC<SacramentFormProps> = ({
             </div>
 
             <div className="form-section">
-                <h3 className="section-title"><Baby size={18} /> Dados do Batizado</h3>
+                <h3 className="section-title"><Baby size={18} /> {type === 'baptism' ? 'Dados do Batizado' : type === 'first_communion' ? 'Dados do Comungante' : type === 'confirmation' ? 'Dados do Crismando' : type === 'anointing_of_sick' ? 'Dados do Fiel' : 'Dados do Sujeito'}</h3>
                 <div className="form-group">
                     <PersonSearch
                         tenantId={tenantId}
