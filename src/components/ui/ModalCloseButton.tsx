@@ -1,4 +1,4 @@
-import React from 'react';
+import type { FC } from 'react';
 import { X } from 'lucide-react';
 import './ModalCloseButton.css';
 
