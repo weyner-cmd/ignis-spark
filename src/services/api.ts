@@ -330,7 +330,7 @@ export const ignisApi = {
                 .select()
                 .single();
             if (error) throw error;
-            return newItem as Sacrament;
+            return newItem as unknown as Sacrament;
         },
         getByPerson: async (tenantId: string, personId: string) => {
             const { data, error } = await supabase
