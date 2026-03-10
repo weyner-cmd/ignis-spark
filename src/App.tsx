@@ -101,6 +101,9 @@ function App() {
                   <ParishesTable refreshTrigger={refreshTrigger} />
                 </>
               )}
+              {activeTab === 'priest-agenda' && (
+                <PriestAgenda />
+              )}
               {activeTab === 'global-map' && (
                 <GlobalPastoralMap />
               )}
