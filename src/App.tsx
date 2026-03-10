@@ -157,6 +157,7 @@ function App() {
                   <StaffDirectory />
                 </>
               )}
+              {activeTab === 'priest-agenda' && <PriestAgenda />}
               {activeTab === 'missio' && <MatrizDashboard />}
               {activeTab === 'sacramenta' && activeTenant && (
                 <div className="sacramenta-container">
