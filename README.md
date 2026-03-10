@@ -13,7 +13,7 @@ Este documento contém o planejamento base e Roadmap para a construção do **Ig
 
 ### FASE 1 — MVP MISSIO PONTA A PONTA
 - [x] **[M1]** Visão Diária refatorada com design da referência
-- [x] **[M4]** Switcher de visões (Abas) 
+- [x] **[M4]** Switcher de visões (Abas)
 - [x] **[M5]** Formulário de agendamento (Drawer Modal) com máscara WhatsApp e dropdown de Padre
 - [x] **[M4b]** Filtros (Comunidades, etc.)
 - [x] **[M6]** Modal de detalhes de Agendamento + permissões por perfil
@@ -22,8 +22,8 @@ Este documento contém o planejamento base e Roadmap para a construção do **Ig
 ### FASE 2 — EXPANSÃO MISSIO + OUTROS MÓDULOS
 - [x] **[M2]** Visão Semanal
 - [x] **[M3]** Visão Mensal
-- [ ] Modelagem e tela Sacramenta conectado ao backend
-- [ ] Modelagem e tela Pastoralis conectado ao backend
+- [x] Modelagem e tela Sacramenta conectado ao backend
+- [x] Modelagem e tela Pastoralis conectado ao backend
 - [ ] Polimento visual contínuo
 
 ### FASE 3 — PRODUÇÃO
@@ -34,8 +34,20 @@ Este documento contém o planejamento base e Roadmap para a construção do **Ig
 
 ---
 
-## Stack:
+## Stack
 - Vite + React + TypeScript
 - @tanstack/react-query
 - lucide-react (Icons)
-- Supabase (Auth, RLS, Database)
+- Lovable Cloud / Supabase (Auth, RLS, Database, Edge Functions)
+- date-fns
+- recharts
+- react-hot-toast
+
+## Banco de Dados
+Tabelas criadas com RLS ativo:
+- `tenants` — Paróquias
+- `sub_tenants` — Comunidades / Capelas
+- `profiles` — Perfis de usuário (auto-criados no signup)
+- `appointments` — Agendamentos (Missio)
+- `sacraments` — Batismos, Matrimônios, Crismas (Sacramenta)
+- `people` — Diretório de fiéis (Pastoralis)
