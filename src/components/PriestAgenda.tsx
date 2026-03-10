@@ -150,6 +150,13 @@ export const PriestAgenda: React.FC = () => {
       await ignisApi.appointments.updateStatus(appointment.id, 'completed');
       toast.success(`✅ ${appointment.clientName} — Check-in realizado`);
       fetchAppointments();
+      // Enviar notificação WhatsApp silenciosamente
+      try {
+        await ignisApi.notifications.sendWhatsAppConfirmation(appointment.id);
+      } catch {
+        // Falha no WhatsApp não bloqueia o check-in
+        console.warn('WhatsApp notification failed for check-in:', appointment.id);
+      }
     } catch {
       toast.error('Erro ao registrar check-in');
     }

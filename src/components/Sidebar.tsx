@@ -10,11 +10,14 @@ import {
   Settings,
   Flame,
   FileBarChart,
-  Globe
+  Globe,
+  Sun,
+  Moon
 } from 'lucide-react';
 import './Sidebar.css';
 
 import { useTenant } from '../contexts/TenantContext';
+import { useTheme } from '../hooks/useTheme';
 
 const navItems = [
   { icon: Home, label: 'Início', id: 'home' },
@@ -37,7 +40,7 @@ interface SidebarProps {
 
 export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onTabChange, userLevel, isOpen }) => {
   const { activeTenant } = useTenant();
-
+  const { theme, toggleTheme } = useTheme();
   // If active_modules is present, filter. Otherwise show all (default for MVP)
   const filteredNavItems = navItems.filter(item => {
     if (item.id === 'home') return true;
@@ -78,6 +81,14 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onTabChange, userLe
 
       <div className="sidebar-footer">
         <div className="nav-list" style={{ marginBottom: '16px' }}>
+          <button
+            className="nav-item theme-toggle-btn"
+            onClick={toggleTheme}
+            title={theme === 'dark' ? 'Modo claro' : 'Modo escuro'}
+          >
+            {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+            <span>{theme === 'dark' ? 'Modo Claro' : 'Modo Escuro'}</span>
+          </button>
           <a href="#settings" className="nav-item">
             <Settings />
             <span>Configurações</span>
