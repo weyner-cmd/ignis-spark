@@ -17,6 +17,7 @@ import toast from 'react-hot-toast';
 import { ignisApi } from '../services/api';
 import type { Appointment } from '../services/api';
 import { useTenant } from '../contexts/TenantContext';
+import { useRealtimeSubscription } from '../hooks/useRealtimeSubscription';
 import { AppointmentModal } from './AppointmentModal';
 import './PriestAgenda.css';
 
@@ -96,6 +97,20 @@ export const PriestAgenda: React.FC = () => {
   useEffect(() => {
     fetchAppointments();
   }, [fetchAppointments]);
+
+  // Realtime subscription
+  useRealtimeSubscription({
+    table: 'appointments',
+    filter: activeTenant ? `tenant_id=eq.${activeTenant.id}` : undefined,
+    enabled: !!activeTenant,
+    onInsert: (payload) => {
+      const row = payload.new;
+      toast.success(`📋 ${row.client_name} agendou ${SERVICE_LABELS[row.service_type] || row.service_type}`, { duration: 5000 });
+      fetchAppointments();
+    },
+    onUpdate: () => fetchAppointments(),
+    onDelete: () => fetchAppointments(),
+  });
 
   // Match appointment to slot
   const getAppointmentForSlot = (time: string): Appointment | undefined => {
