@@ -72,6 +72,16 @@ function App() {
   const [isWizardOpen, setIsWizardOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
+  // Update currentLevel when profile loads and current level isn't allowed
+  useEffect(() => {
+    if (profile?.role && !allowedLevels.includes(currentLevel)) {
+      setCurrentLevel(defaultLevel);
+    } else if (profile?.role && currentLevel === 'fiel' && defaultLevel !== 'fiel') {
+      // First load: profile just arrived, upgrade from default 'fiel'
+      setCurrentLevel(defaultLevel);
+    }
+  }, [profile?.role]);
+
   const renderDashboard = () => {
     switch (currentLevel) {
       case 'super':
