@@ -39,7 +39,7 @@ export const Login: React.FC = () => {
                     </div>
                     <h1>IGNIS</h1>
                     <p className="login-subtitle">
-                        {activeTenant?.slogan || 'Sistema de Gestão Pastoral'}
+                        Sistema de Gestão Pastoral
                     </p>
                 </div>
 
