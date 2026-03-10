@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import {
   ChevronLeft,
   ChevronRight,
@@ -9,7 +9,10 @@ import {
   Calendar,
   Info,
   Trash2,
-  UserX
+  UserX,
+  Search,
+  Filter,
+  Printer
 } from 'lucide-react';
 import { format, addDays, startOfDay, endOfDay, isToday, isTomorrow, addWeeks, startOfWeek } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
