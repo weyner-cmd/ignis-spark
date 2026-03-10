@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { supabase } from '../services/supabase';
+import { useAuth } from './AuthContext';
 
 interface Tenant {
     id: string;
@@ -37,31 +38,35 @@ interface TenantContextType {
 const TenantContext = createContext<TenantContextType | undefined>(undefined);
 
 export const TenantProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    const { session, isLoading: authLoading } = useAuth();
     const [activeTenant, setActiveTenant] = useState<Tenant | null>(null);
     const [activeSubTenant, setActiveSubTenant] = useState<SubTenant | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
-    // Fetch the main tenant (For MVP we pick the first one, or based on subdomain later)
     useEffect(() => {
+        // Wait for auth to finish loading
+        if (authLoading) return;
+
+        // If no session, no tenant to load
+        if (!session) {
+            setActiveTenant(null);
+            setActiveSubTenant(null);
+            setIsLoading(false);
+            return;
+        }
+
         const initTenant = async () => {
             try {
-                // Optional session check - helpful for logs but don't block for bypass
-                const { data: sessionData } = await supabase.auth.getSession();
-                console.log('TenantContext: Session check', !!sessionData?.session);
-
                 const { data, error } = await supabase
                     .from('tenants')
                     .select('*')
                     .eq('status', 'active')
                     .limit(1)
-                    .single();
+                    .maybeSingle();
 
                 if (error) {
                     console.error('Error fetching tenant:', error);
-
-                    // Check if it's a JWT/auth error
                     if (error.code === 'PGRST301' || error.message?.includes('JWT')) {
-                        console.error('JWT expired or invalid - logging out');
                         await supabase.auth.signOut();
                         setIsLoading(false);
                         return;
@@ -72,7 +77,6 @@ export const TenantProvider: React.FC<{ children: React.ReactNode }> = ({ childr
                     console.log('Tenant loaded:', data);
                     setActiveTenant(data as Tenant);
 
-                    // Also check for sub-tenants to ensure grid can work
                     const { data: subData } = await supabase
                         .from('sub_tenants')
                         .select('*')
@@ -97,11 +101,11 @@ export const TenantProvider: React.FC<{ children: React.ReactNode }> = ({ childr
             }
         };
         initTenant();
-    }, []);
+    }, [session, authLoading]);
 
     const setTenant = (tenant: Tenant) => {
         setActiveTenant(tenant);
-        setActiveSubTenant(null); // Reset sub-tenant when switching main tenant
+        setActiveSubTenant(null);
     };
 
     const updateTenantModules = async (modules: string[]) => {
