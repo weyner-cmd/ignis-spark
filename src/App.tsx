@@ -176,11 +176,22 @@ function App() {
   return (
     <div className={`app-container level-${currentLevel}`}>
       {user && (
-        <Sidebar
-          activeTab={activeTab}
-          onTabChange={setActiveTab}
-          userLevel={profile?.role === 'super_admin' ? 'super' : currentLevel}
-        />
+        <>
+          <button
+            className="mobile-menu-btn"
+            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+            aria-label="Abrir menu"
+          >
+            <Menu size={22} />
+          </button>
+          {isSidebarOpen && <div className="sidebar-overlay" onClick={() => setIsSidebarOpen(false)} />}
+          <Sidebar
+            activeTab={activeTab}
+            onTabChange={(id) => { setActiveTab(id); setIsSidebarOpen(false); }}
+            userLevel={profile?.role === 'super_admin' ? 'super' : currentLevel}
+            isOpen={isSidebarOpen}
+          />
+        </>
       )}
 
       <main className="main-content">
