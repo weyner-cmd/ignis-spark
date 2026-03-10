@@ -40,7 +40,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onTabChange, userLe
 
   // If active_modules is present, filter. Otherwise show all (default for MVP)
   const filteredNavItems = navItems.filter(item => {
-    if (item.id === 'home') return true; // Always show home
+    if (item.id === 'home') return true;
+    if (item.id === 'priest-agenda') return userLevel === 'super' || userLevel === 'matriz';
     if (item.id === 'global-map') return userLevel === 'super';
     if (!activeTenant?.active_modules) return true;
     return activeTenant.active_modules.includes(item.id);
