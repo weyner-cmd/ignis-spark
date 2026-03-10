@@ -19,6 +19,7 @@ const SERVICE_ACTIONS = [
 
 const SACRAMENT_LABELS: Record<string, string> = {
   baptism: 'Batismo',
+  first_communion: 'Primeira Comunhão',
   confirmation: 'Crisma',
   marriage: 'Matrimônio',
 };
