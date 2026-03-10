@@ -24,7 +24,7 @@ const SACRAMENT_LABELS: Record<string, string> = {
   marriage: 'Matrimônio',
 };
 
-const SACRAMENT_ORDER = ['baptism', 'first_communion', 'confirmation', 'marriage'];
+const SACRAMENT_ORDER = ['baptism', 'first_communion', 'confirmation', 'marriage', 'anointing_of_sick'];
 
 export const FielHome: React.FC = () => {
   const { user, profile } = useAuth();
