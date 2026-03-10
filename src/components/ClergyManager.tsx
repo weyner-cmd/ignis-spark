@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Calendar, User, Clock, CheckCircle, ChevronLeft, ChevronRight, AlertTriangle } from 'lucide-react';
+import { User, Clock, CheckCircle, ChevronLeft, ChevronRight, AlertTriangle } from 'lucide-react';
 import './ClergyManager.css';
 
 interface ClergyMember {
