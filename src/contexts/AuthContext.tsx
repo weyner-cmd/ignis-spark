@@ -86,7 +86,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         const mockUser = { id: profileData?.id || 'dev-id', email } as any;
         setUser(mockUser);
-        const baseProfile = profileData || {
+        const baseProfile: any = profileData || {
             id: 'dev-id',
             full_name: 'Dev Admin',
             role: 'super_admin'
