@@ -330,7 +330,7 @@ export const ignisApi = {
                 .select()
                 .single();
             if (error) throw error;
-            return newItem as Sacrament;
+            return newItem as unknown as Sacrament;
         },
         getByPerson: async (tenantId: string, personId: string) => {
             const { data, error } = await supabase
@@ -447,7 +447,7 @@ export const ignisApi = {
                 .single();
 
             if (error) throw error;
-            return result as Person;
+            return result as unknown as Person;
         },
         search: async (tenantId: string, query: string) => {
             const { data, error } = await supabase
@@ -456,7 +456,7 @@ export const ignisApi = {
                 .eq('tenant_id', tenantId)
                 .ilike('name', `%${query}%`);
             if (error) throw error;
-            return (data || []) as Person[];
+            return (data || []) as unknown as Person[];
         }
     },
     governance: {

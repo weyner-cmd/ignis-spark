@@ -59,18 +59,18 @@ export const EditParishModal: React.FC<EditParishModalProps> = ({ isOpen, onClos
                 setFormData({
                     name: data.name || '',
                     cnpj: data.cnpj || '',
-                    status: data.status || 'active',
+                    status: (data.status as any) || 'active',
                     address: data.address || '',
-                    number: data.number || '', // Assuming number might exist, added here
+                    number: (data as any).number || '',
                     neighborhood: data.neighborhood || '',
                     city: data.city || '',
                     state: data.state || '',
                     zip_code: data.zip_code || '',
                     phone: data.phone || '',
-                    email: data.email || '',
+                    email: (data as any).email || '',
                     priest_name: data.priest_name || '',
-                    foundation_date: data.foundation_date || '',
-                    notes: data.notes || '',
+                    foundation_date: (data as any).foundation_date || '',
+                    notes: (data as any).notes || '',
                 });
                 if (data.logo_url) setLogoPreview(data.logo_url);
             }
