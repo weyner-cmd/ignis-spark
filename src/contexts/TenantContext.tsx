@@ -42,7 +42,7 @@ const STORAGE_KEY = 'ignis_selected_tenant_id';
 const TenantContext = createContext<TenantContextType | undefined>(undefined);
 
 export const TenantProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const { session, profile, isLoading: authLoading } = useAuth();
+    const { session, isLoading: authLoading } = useAuth();
     const [activeTenant, setActiveTenant] = useState<Tenant | null>(null);
     const [activeSubTenant, setActiveSubTenant] = useState<SubTenant | null>(null);
     const [allTenants, setAllTenants] = useState<Tenant[]>([]);
