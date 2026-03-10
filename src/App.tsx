@@ -35,16 +35,42 @@ import './App.css';
 
 type Level = 'super' | 'matriz' | 'comunidade' | 'fiel';
 
+const levelsByRole: Record<string, Level[]> = {
+  super_admin: ['super', 'matriz', 'comunidade', 'fiel'],
+  matriz_admin: ['matriz', 'comunidade', 'fiel'],
+  comunidade_lead: ['comunidade', 'fiel'],
+  fiel: ['fiel'],
+};
+
+const defaultLevelForRole: Record<string, Level> = {
+  super_admin: 'super',
+  matriz_admin: 'matriz',
+  comunidade_lead: 'comunidade',
+  fiel: 'fiel',
+};
+
+const levelLabels: Record<Level, string> = {
+  super: 'Visão Super Admin',
+  matriz: 'Visão Paróquia',
+  comunidade: 'Visão Comunidade',
+  fiel: 'Visão Fiel',
+};
+
 function App() {
-  const [currentLevel, setCurrentLevel] = useState<Level>('super');
+  const { activeTenant, isLoading: isTenantLoading } = useTenant();
+  const { user, profile, isLoading: isAuthLoading, signOut } = useAuth();
+
+  const userRole = profile?.role || 'fiel';
+  const allowedLevels = levelsByRole[userRole] || ['fiel'];
+  const defaultLevel = defaultLevelForRole[userRole] || 'fiel';
+
+  const [currentLevel, setCurrentLevel] = useState<Level>(defaultLevel);
   const [activeTab, setActiveTab] = useState<string>('home');
   const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
   const [refreshTrigger] = useState(0);
   const [sacramentView, setSacramentView] = useState<SacramentType>('baptism');
   const [isWizardOpen, setIsWizardOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const { activeTenant, isLoading: isTenantLoading } = useTenant();
-  const { user, profile, isLoading: isAuthLoading, signOut } = useAuth();
 
   const renderDashboard = () => {
     switch (currentLevel) {
