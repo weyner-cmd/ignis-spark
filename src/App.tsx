@@ -367,9 +367,5 @@ function StatCard({ label, value, trend, direction }: { label: string; value: st
     </div>
   );
 }
-      </div>
-    </div>
-  );
-}
 
 export default App;
