@@ -64,8 +64,38 @@ export const PriestAgenda: React.FC = () => {
   const [selectedSubTenantId, setSelectedSubTenantId] = useState<string>('');
   const [editingAppointment, setEditingAppointment] = useState<Appointment | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [statusFilter, setStatusFilter] = useState<string>('todos');
+  const [searchTerm, setSearchTerm] = useState('');
+  const printRef = useRef<HTMLDivElement>(null);
 
   const timeSlots = generateTimeSlots();
+
+  // Filtered appointments
+  const filteredAppointments = useMemo(() => {
+    let filtered = appointments;
+    if (statusFilter !== 'todos') {
+      filtered = filtered.filter(a => a.status === statusFilter);
+    }
+    if (searchTerm.trim()) {
+      const term = searchTerm.toLowerCase();
+      filtered = filtered.filter(a => a.clientName.toLowerCase().includes(term));
+    }
+    return filtered;
+  }, [appointments, statusFilter, searchTerm]);
+
+  // Filtered KPIs
+  const filteredGetAppointmentForSlot = (time: string): Appointment | undefined => {
+    return filteredAppointments.find(a => {
+      const apptTime = new Date(a.startTime);
+      const h = String(apptTime.getHours()).padStart(2, '0');
+      const m = String(apptTime.getMinutes()).padStart(2, '0');
+      return `${h}:${m}` === time;
+    });
+  };
+
+  const handlePrint = () => {
+    window.print();
+  };
 
   // Load communities
   useEffect(() => {
