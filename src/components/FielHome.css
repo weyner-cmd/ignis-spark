@@ -250,6 +250,10 @@
   font-weight: 600;
   text-align: center;
   transition: var(--transition);
+  cursor: pointer;
+  background: none;
+  color: var(--text-primary);
+  border: 1px solid var(--border);
 }
 
 .icon-gold {
