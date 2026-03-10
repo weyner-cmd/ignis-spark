@@ -29,43 +29,68 @@ interface SubTenant {
 interface TenantContextType {
     activeTenant: Tenant | null;
     activeSubTenant: SubTenant | null;
+    allTenants: Tenant[];
     setTenant: (tenant: Tenant) => void;
     setSubTenant: (subTenant: SubTenant | null) => void;
+    switchTenant: (tenantId: string) => void;
     updateTenantModules: (modules: string[]) => Promise<void>;
     isLoading: boolean;
 }
 
+const STORAGE_KEY = 'ignis_selected_tenant_id';
+
 const TenantContext = createContext<TenantContextType | undefined>(undefined);
 
 export const TenantProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const { session, isLoading: authLoading } = useAuth();
+    const { session, profile, isLoading: authLoading } = useAuth();
     const [activeTenant, setActiveTenant] = useState<Tenant | null>(null);
     const [activeSubTenant, setActiveSubTenant] = useState<SubTenant | null>(null);
+    const [allTenants, setAllTenants] = useState<Tenant[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
+    const loadSubTenant = async (tenantId: string) => {
+        const { data: subData } = await supabase
+            .from('sub_tenants')
+            .select('*')
+            .eq('tenant_id', tenantId)
+            .limit(1);
+
+        if (subData && subData.length > 0) {
+            const s = subData[0];
+            setActiveSubTenant({
+                id: s.id,
+                tenantId: s.tenant_id,
+                name: s.name,
+                status: 'active',
+                address: s.address || ''
+            });
+        } else {
+            setActiveSubTenant(null);
+        }
+    };
+
     useEffect(() => {
-        // Wait for auth to finish loading
         if (authLoading) return;
 
-        // If no session, no tenant to load
         if (!session) {
             setActiveTenant(null);
             setActiveSubTenant(null);
+            setAllTenants([]);
             setIsLoading(false);
             return;
         }
 
         const initTenant = async () => {
             try {
-                const { data, error } = await supabase
+                // Load all active tenants
+                const { data: tenantsData, error } = await supabase
                     .from('tenants')
                     .select('*')
                     .eq('status', 'active')
-                    .limit(1)
-                    .maybeSingle();
+                    .order('name');
 
                 if (error) {
-                    console.error('Error fetching tenant:', error);
+                    console.error('Error fetching tenants:', error);
                     if (error.code === 'PGRST301' || error.message?.includes('JWT')) {
                         await supabase.auth.signOut();
                         setIsLoading(false);
@@ -73,26 +98,18 @@ export const TenantProvider: React.FC<{ children: React.ReactNode }> = ({ childr
                     }
                 }
 
-                if (data) {
-                    console.log('Tenant loaded:', data);
-                    setActiveTenant(data as Tenant);
+                const tenants = (tenantsData || []) as Tenant[];
+                setAllTenants(tenants);
 
-                    const { data: subData } = await supabase
-                        .from('sub_tenants')
-                        .select('*')
-                        .eq('tenant_id', data.id)
-                        .limit(1);
+                if (tenants.length > 0) {
+                    // Check localStorage for saved selection
+                    const savedId = localStorage.getItem(STORAGE_KEY);
+                    const savedTenant = savedId ? tenants.find(t => t.id === savedId) : null;
+                    const selected = savedTenant || tenants[0];
 
-                    if (subData && subData.length > 0) {
-                        const s = subData[0];
-                        setActiveSubTenant({
-                            id: s.id,
-                            tenantId: s.tenant_id,
-                            name: s.name,
-                            status: 'active',
-                            address: s.address || ''
-                        });
-                    }
+                    setActiveTenant(selected);
+                    localStorage.setItem(STORAGE_KEY, selected.id);
+                    await loadSubTenant(selected.id);
                 }
             } catch (err) {
                 console.error('Unexpected error loading tenant:', err);
@@ -103,9 +120,20 @@ export const TenantProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         initTenant();
     }, [session, authLoading]);
 
+    const switchTenant = (tenantId: string) => {
+        const tenant = allTenants.find(t => t.id === tenantId);
+        if (tenant) {
+            setActiveTenant(tenant);
+            setActiveSubTenant(null);
+            localStorage.setItem(STORAGE_KEY, tenant.id);
+            loadSubTenant(tenant.id);
+        }
+    };
+
     const setTenant = (tenant: Tenant) => {
         setActiveTenant(tenant);
         setActiveSubTenant(null);
+        localStorage.setItem(STORAGE_KEY, tenant.id);
     };
 
     const updateTenantModules = async (modules: string[]) => {
@@ -130,8 +158,10 @@ export const TenantProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         <TenantContext.Provider value={{
             activeTenant,
             activeSubTenant,
+            allTenants,
             setTenant,
             setSubTenant: setActiveSubTenant,
+            switchTenant,
             updateTenantModules,
             isLoading
         }}>
