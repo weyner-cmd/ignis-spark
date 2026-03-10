@@ -40,7 +40,7 @@ function App() {
   const [activeTab, setActiveTab] = useState<string>('home');
   const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
   const [refreshTrigger] = useState(0);
-  const [sacramentView, setSacramentView] = useState<'baptism' | 'marriage'>('baptism');
+  const [sacramentView, setSacramentView] = useState<SacramentType>('baptism');
   const [isWizardOpen, setIsWizardOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { activeTenant, isLoading: isTenantLoading } = useTenant();
