@@ -222,6 +222,75 @@ export const SacramentForm: React.FC<SacramentFormProps> = ({
                 </div>
             )}
 
+            {(type === 'first_communion' || type === 'confirmation') && (
+                <div className="form-section">
+                    <h3 className="section-title"><Users size={18} /> {type === 'first_communion' ? 'Catequese e Padrinhos' : 'Crisma — Padrinho e Bispo'}</h3>
+                    <div className="form-row">
+                        <div className="form-group flex-1">
+                            <PersonSearch
+                                tenantId={tenantId}
+                                label={type === 'first_communion' ? 'Catequista' : 'Padrinho/Madrinha de Crisma'}
+                                onSelect={(p) => {
+                                    setGodfather(p?.name || '');
+                                    setGodfatherId(p?.id);
+                                }}
+                            />
+                            {!godfatherId && (
+                                <input className="input-text" type="text" value={godfather} onChange={e => setGodfather(e.target.value)} placeholder="Ou digite o nome" style={{ marginTop: '8px' }} />
+                            )}
+                        </div>
+                        {type === 'confirmation' && (
+                            <div className="form-group flex-1">
+                                <label>Bispo Celebrante</label>
+                                <input className="input-text" type="text" value={witness1} onChange={e => setWitness1(e.target.value)} placeholder="Ex: Dom João da Silva" />
+                            </div>
+                        )}
+                    </div>
+                    <div className="form-row">
+                        <div className="form-group flex-1">
+                            <PersonSearch
+                                tenantId={tenantId}
+                                label="Nome do Pai"
+                                onSelect={(p) => {
+                                    setFather(p?.name || '');
+                                    setFatherId(p?.id);
+                                }}
+                            />
+                            {!fatherId && (
+                                <input className="input-text" type="text" value={father} onChange={e => setFather(e.target.value)} placeholder="Ou digite o nome" style={{ marginTop: '8px' }} />
+                            )}
+                        </div>
+                        <div className="form-group flex-1">
+                            <PersonSearch
+                                tenantId={tenantId}
+                                label="Nome da Mãe"
+                                onSelect={(p) => {
+                                    setMother(p?.name || '');
+                                    setMotherId(p?.id);
+                                }}
+                            />
+                            {!motherId && (
+                                <input className="input-text" type="text" value={mother} onChange={e => setMother(e.target.value)} placeholder="Ou digite o nome" style={{ marginTop: '8px' }} />
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {type === 'anointing_of_sick' && (
+                <div className="form-section">
+                    <h3 className="section-title"><Users size={18} /> Detalhes da Unção</h3>
+                    <div className="form-group">
+                        <label>Local da Celebração</label>
+                        <input className="input-text" type="text" value={birthPlace} onChange={e => setBirthPlace(e.target.value)} placeholder="Ex: Hospital São Lucas, Residência..." style={{ width: '100%' }} />
+                    </div>
+                    <div className="form-group">
+                        <label>Observações / Condição do Fiel</label>
+                        <input className="input-text" type="text" value={witness1} onChange={e => setWitness1(e.target.value)} placeholder="Ex: Enfermo em estado grave, pré-operatório..." style={{ width: '100%' }} />
+                    </div>
+                </div>
+            )}
+
             {type === 'marriage' && (
                 <div className="form-section">
                     <h3 className="section-title"><Users size={18} /> Cônjuges e Testemunhas</h3>
