@@ -19,9 +19,10 @@ const SERVICE_ACTIONS = [
 
 const SACRAMENT_LABELS: Record<string, string> = {
   baptism: 'Batismo',
-  first_communion: 'Primeira Comunhão',
+  first_communion: '1ª Eucaristia',
   confirmation: 'Crisma',
   marriage: 'Matrimônio',
+  anointing_of_sick: 'Unção dos Enfermos',
 };
 
 const SACRAMENT_ORDER = ['baptism', 'first_communion', 'confirmation', 'marriage', 'anointing_of_sick'];
