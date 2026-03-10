@@ -32,7 +32,7 @@ export const FielHome: React.FC = () => {
   const [sacraments, setSacraments] = useState<Sacrament[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isWizardOpen, setIsWizardOpen] = useState(false);
-  const [wizardService, setWizardService] = useState('');
+  const [, setWizardService] = useState('');
 
   const userName = profile?.full_name || user?.email?.split('@')[0] || 'Fiel';
   const firstName = userName.split(' ')[0];
