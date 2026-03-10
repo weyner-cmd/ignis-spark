@@ -81,6 +81,14 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onTabChange, userLe
 
       <div className="sidebar-footer">
         <div className="nav-list" style={{ marginBottom: '16px' }}>
+          <button
+            className="nav-item theme-toggle-btn"
+            onClick={toggleTheme}
+            title={theme === 'dark' ? 'Modo claro' : 'Modo escuro'}
+          >
+            {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+            <span>{theme === 'dark' ? 'Modo Claro' : 'Modo Escuro'}</span>
+          </button>
           <a href="#settings" className="nav-item">
             <Settings />
             <span>Configurações</span>
