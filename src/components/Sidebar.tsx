@@ -33,7 +33,7 @@ interface SidebarProps {
   isOpen?: boolean;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onTabChange, userLevel }) => {
+export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onTabChange, userLevel, isOpen }) => {
   const { activeTenant } = useTenant();
 
   // If active_modules is present, filter. Otherwise show all (default for MVP)
