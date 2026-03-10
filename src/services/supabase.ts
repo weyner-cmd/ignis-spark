@@ -1,16 +1,14 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
-
-console.log('Supabase Config:', {
-  url: supabaseUrl,
-  keyLength: supabaseAnonKey?.length,
-  keyStart: supabaseAnonKey?.substring(0, 10)
-});
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseAnonKey) {
-  console.warn('⚠️ Supabase URL or Anon Key is missing! Check your .env file.');
+  console.warn('⚠️ Supabase URL or Anon Key is missing. Backend features will be unavailable.');
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Use placeholder values to avoid crash — calls will fail gracefully at runtime
+export const supabase = createClient(
+  supabaseUrl || 'https://placeholder.supabase.co',
+  supabaseAnonKey || 'placeholder-key'
+);
