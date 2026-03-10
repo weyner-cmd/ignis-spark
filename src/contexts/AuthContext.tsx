@@ -16,8 +16,9 @@ interface AuthContextType {
     profile: UserProfile | null;
     isLoading: boolean;
     signIn: (email: string) => Promise<void>;
+    signInWithPassword: (email: string, password: string) => Promise<void>;
+    signUp: (email: string, password: string, fullName: string) => Promise<void>;
     signOut: () => Promise<void>;
-    devBypass?: (email: string) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
