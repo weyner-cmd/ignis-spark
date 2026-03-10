@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { X, Send, Loader2 } from 'lucide-react';
-import { supabase } from '../integrations/supabase/client';
+import { supabase } from '../services/supabase';
 import toast from 'react-hot-toast';
 import './OnboardingModal.css';
 
