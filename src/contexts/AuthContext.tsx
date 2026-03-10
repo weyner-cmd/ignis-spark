@@ -33,7 +33,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     useEffect(() => {
         console.log('AuthProvider: useEffect starting...');
         // Initial Session Check
-        supabase.auth.getSession().then(({ data: { session }, error }) => {
+        const initSession = async () => {
+            const { data: { session }, error } = await supabase.auth.getSession();
             if (error) console.error('AuthProvider: getSession error', error);
             else console.log('AuthProvider: Session retrieved', session);
 
@@ -43,7 +44,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 await fetchProfile(session.user.id);
             }
             setIsLoading(false);
-        });
+        };
+        initSession();
 
         // Listen for Auth Changes
         const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
