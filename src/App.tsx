@@ -42,6 +42,7 @@ function App() {
   const [refreshTrigger] = useState(0);
   const [sacramentView, setSacramentView] = useState<'baptism' | 'marriage'>('baptism');
   const [isWizardOpen, setIsWizardOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { activeTenant, isLoading: isTenantLoading } = useTenant();
   const { user, profile, isLoading: isAuthLoading, signOut } = useAuth();
 
