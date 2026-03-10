@@ -59,7 +59,7 @@ const levelLabels: Record<Level, string> = {
 };
 
 function App() {
-  const { activeTenant, isLoading: isTenantLoading } = useTenant();
+  const { activeTenant, allTenants, switchTenant, isLoading: isTenantLoading } = useTenant();
   const { user, profile, isLoading: isAuthLoading, signOut } = useAuth();
 
   const userRole = profile?.role || 'fiel';
@@ -265,11 +265,26 @@ function App() {
           <div className="header-top">
             <div className="header-left">
               <div className="tenant-selector">
-                <div className="active-tenant-badge">
-                  <Landmark size={14} />
-                  <span>{activeTenant?.name || 'IGNIS Global'}</span>
-                  {currentLevel !== 'super' && <ChevronDown size={14} className="ml-2 opacity-50" />}
-                </div>
+                {userRole === 'super_admin' && allTenants.length > 1 ? (
+                  <div className="active-tenant-badge tenant-dropdown-wrapper">
+                    <Landmark size={14} />
+                    <select
+                      className="tenant-dropdown"
+                      value={activeTenant?.id || ''}
+                      onChange={(e) => switchTenant(e.target.value)}
+                    >
+                      {allTenants.map((t) => (
+                        <option key={t.id} value={t.id}>{t.name}</option>
+                      ))}
+                    </select>
+                    <ChevronDown size={14} className="dropdown-chevron" />
+                  </div>
+                ) : (
+                  <div className="active-tenant-badge">
+                    <Landmark size={14} />
+                    <span>{activeTenant?.name || 'IGNIS Global'}</span>
+                  </div>
+                )}
               </div>
 
               <div className="header-actions-group">

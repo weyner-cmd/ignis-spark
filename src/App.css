@@ -1,3 +1,38 @@
+/* Tenant dropdown */
+.tenant-dropdown-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.tenant-dropdown {
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  border: none;
+  color: inherit;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding-right: 18px;
+  max-width: 220px;
+  text-overflow: ellipsis;
+}
+
+.tenant-dropdown:focus {
+  outline: none;
+}
+
+.dropdown-chevron {
+  position: absolute;
+  right: 0;
+  pointer-events: none;
+  opacity: 0.5;
+}
+
 .app-container {
   display: flex;
   min-height: 100vh;
