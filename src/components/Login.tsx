@@ -2,10 +2,8 @@ import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { Flame, Loader2, UserPlus, LogIn } from 'lucide-react';
 import './Login.css';
-import { useTenant } from '../contexts/TenantContext';
 
 export const Login: React.FC = () => {
-    const { activeTenant } = useTenant();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [fullName, setFullName] = useState('');
