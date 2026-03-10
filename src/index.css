@@ -8,12 +8,12 @@
   --accent-color: #D1A84A;
   --success: #2F6F4E;
   --background: #1a1a1f;
-  --surface: #22222a;
-  --surface-2: #2a2a35;
-  --surface-hover: #32323e;
-  --border: #333345;
-  --text-primary: #e8e8f0;
-  --text-secondary: #888899;
+  --surface: #252530;
+  --surface-2: #2e2e3a;
+  --surface-hover: #383845;
+  --border: #3e3e52;
+  --text-primary: #f2f2fa;
+  --text-secondary: #a8a8be;
 
   /* ─── Status Colors (Missio) ─── */
   --status-confirmed: #2ecc71;
