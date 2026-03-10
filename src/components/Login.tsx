@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { Flame, Loader2, UserPlus, LogIn } from 'lucide-react';
+import { Flame, Loader2, UserPlus, LogIn, Eye, EyeOff } from 'lucide-react';
 import './Login.css';
 
 export const Login: React.FC = () => {
