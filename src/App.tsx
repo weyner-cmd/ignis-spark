@@ -342,14 +342,19 @@ function App() {
   );
 }
 
-function StatCard({ label, value, trend }: { label: string, value: string, trend: string }) {
+function StatCard({ label, value, trend, direction }: { label: string; value: string; trend: string; direction?: 'up' | 'down' | 'neutral' }) {
+  const trendClass = direction === 'down' ? 'trend-down' : 'trend-up';
   return (
     <div className="stat-card">
       <div className="stat-label">{label}</div>
       <div className="stat-value">{value}</div>
-      <div className="stat-trend trend-up">
-        {trend.includes('mês') || trend.includes('%') ? <TrendingUp size={14} /> : <Activity size={14} />}
+      <div className={`stat-trend ${trendClass}`}>
+        {direction === 'down' ? <TrendingUp size={14} style={{ transform: 'rotate(180deg)' }} /> : direction === 'up' ? <TrendingUp size={14} /> : <Activity size={14} />}
         <span>{trend}</span>
+      </div>
+    </div>
+  );
+}
       </div>
     </div>
   );
