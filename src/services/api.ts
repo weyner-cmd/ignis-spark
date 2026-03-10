@@ -48,7 +48,7 @@ export interface Appointment {
 export interface Sacrament {
     id: string;
     tenantId: string;
-    type: 'baptism' | 'marriage' | 'confirmation';
+    type: 'baptism' | 'marriage' | 'confirmation' | 'first_communion' | 'anointing_of_sick';
     celebrantId?: string;
     subjectId?: string; // Link to people table
     celebratoryDate: string;
