@@ -17,6 +17,7 @@ import { Breadcrumbs } from './components/Breadcrumbs';
 import { ReportsPanel } from './components/ReportsPanel';
 import { GlobalPastoralMap } from './components/Governance/GlobalPastoralMap';
 import { AppointmentWizard } from './components/AppointmentWizard';
+import { PriestAgenda } from './components/PriestAgenda';
 import {
   Plus,
   Bell,
@@ -100,6 +101,9 @@ function App() {
                   <ParishesTable refreshTrigger={refreshTrigger} />
                 </>
               )}
+              {activeTab === 'priest-agenda' && (
+                <PriestAgenda />
+              )}
               {activeTab === 'global-map' && (
                 <GlobalPastoralMap />
               )}
@@ -153,6 +157,7 @@ function App() {
                   <StaffDirectory />
                 </>
               )}
+              {activeTab === 'priest-agenda' && <PriestAgenda />}
               {activeTab === 'missio' && <MatrizDashboard />}
               {activeTab === 'sacramenta' && activeTenant && (
                 <div className="sacramenta-container">
