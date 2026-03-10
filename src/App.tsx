@@ -9,11 +9,11 @@ import { ClergyManager } from './components/ClergyManager';
 import { StaffDirectory } from './components/StaffDirectory';
 import { LocalTriagem } from './components/LocalTriagem';
 import { FielHome } from './components/FielHome';
-import { BaptismRegistry } from './components/Sacramenta/BaptismRegistry';
+import { SacramentRegistry } from './components/Sacramenta/SacramentRegistry';
+import type { SacramentType } from './components/Sacramenta/SacramentRegistry';
 import { PeopleDirectory } from './components/Pastoralis/PeopleDirectory';
 import { Login } from './components/Login';
 import { Breadcrumbs } from './components/Breadcrumbs';
-import { MarriageRegistry } from './components/Sacramenta/MarriageRegistry';
 import { ReportsPanel } from './components/ReportsPanel';
 import { GlobalPastoralMap } from './components/Governance/GlobalPastoralMap';
 import { AppointmentWizard } from './components/AppointmentWizard';
@@ -40,7 +40,7 @@ function App() {
   const [activeTab, setActiveTab] = useState<string>('home');
   const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
   const [refreshTrigger] = useState(0);
-  const [sacramentView, setSacramentView] = useState<'baptism' | 'marriage'>('baptism');
+  const [sacramentView, setSacramentView] = useState<SacramentType>('baptism');
   const [isWizardOpen, setIsWizardOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { activeTenant, isLoading: isTenantLoading } = useTenant();
@@ -72,23 +72,23 @@ function App() {
               )}
               {activeTab === 'sacramenta' && activeTenant && (
                 <div className="sacramenta-container">
-                  <div className="sub-nav glass" style={{ marginBottom: '20px', padding: '10px', display: 'flex', gap: '10px', borderRadius: '12px' }}>
-                    <button
-                      className={`btn-secondary ${sacramentView === 'baptism' ? 'active-tab' : ''}`}
-                      onClick={() => setSacramentView('baptism')}
-                      style={{ flex: 1, color: sacramentView === 'baptism' ? 'var(--accent-color)' : 'inherit' }}
-                    >Batismos</button>
-                    <button
-                      className={`btn-secondary ${sacramentView === 'marriage' ? 'active-tab' : ''}`}
-                      onClick={() => setSacramentView('marriage')}
-                      style={{ flex: 1, color: sacramentView === 'marriage' ? 'var(--accent-color)' : 'inherit' }}
-                    >Matrimônios</button>
+                  <div className="sub-nav glass" style={{ marginBottom: '20px', padding: '8px', display: 'flex', gap: '6px', borderRadius: '12px', flexWrap: 'wrap' }}>
+                    {([
+                      ['baptism', 'Batismos'],
+                      ['first_communion', '1ª Eucaristia'],
+                      ['confirmation', 'Crisma'],
+                      ['marriage', 'Matrimônios'],
+                      ['anointing_of_sick', 'Unção Enfermos'],
+                    ] as [SacramentType, string][]).map(([key, label]) => (
+                      <button
+                        key={key}
+                        className={`btn-secondary ${sacramentView === key ? 'active-tab' : ''}`}
+                        onClick={() => setSacramentView(key)}
+                        style={{ flex: 1, minWidth: '100px', color: sacramentView === key ? 'var(--accent-color)' : 'inherit', fontSize: '0.8rem', padding: '8px 6px' }}
+                      >{label}</button>
+                    ))}
                   </div>
-                  {sacramentView === 'baptism' ? (
-                    <BaptismRegistry tenantId={activeTenant.id} />
-                  ) : (
-                    <MarriageRegistry tenantId={activeTenant.id} />
-                  )}
+                  <SacramentRegistry tenantId={activeTenant.id} type={sacramentView} />
                 </div>
               )}
               {activeTab === 'pastoralis' && activeTenant && (
@@ -120,23 +120,23 @@ function App() {
               {activeTab === 'missio' && <MatrizDashboard />}
               {activeTab === 'sacramenta' && activeTenant && (
                 <div className="sacramenta-container">
-                  <div className="sub-nav glass" style={{ marginBottom: '20px', padding: '10px', display: 'flex', gap: '10px', borderRadius: '12px' }}>
-                    <button
-                      className={`btn-secondary ${sacramentView === 'baptism' ? 'active-tab' : ''}`}
-                      onClick={() => setSacramentView('baptism')}
-                      style={{ flex: 1, color: sacramentView === 'baptism' ? 'var(--accent-color)' : 'inherit' }}
-                    >Batismos</button>
-                    <button
-                      className={`btn-secondary ${sacramentView === 'marriage' ? 'active-tab' : ''}`}
-                      onClick={() => setSacramentView('marriage')}
-                      style={{ flex: 1, color: sacramentView === 'marriage' ? 'var(--accent-color)' : 'inherit' }}
-                    >Matrimônios</button>
+                  <div className="sub-nav glass" style={{ marginBottom: '20px', padding: '8px', display: 'flex', gap: '6px', borderRadius: '12px', flexWrap: 'wrap' }}>
+                    {([
+                      ['baptism', 'Batismos'],
+                      ['first_communion', '1ª Eucaristia'],
+                      ['confirmation', 'Crisma'],
+                      ['marriage', 'Matrimônios'],
+                      ['anointing_of_sick', 'Unção Enfermos'],
+                    ] as [SacramentType, string][]).map(([key, label]) => (
+                      <button
+                        key={key}
+                        className={`btn-secondary ${sacramentView === key ? 'active-tab' : ''}`}
+                        onClick={() => setSacramentView(key)}
+                        style={{ flex: 1, minWidth: '100px', color: sacramentView === key ? 'var(--accent-color)' : 'inherit', fontSize: '0.8rem', padding: '8px 6px' }}
+                      >{label}</button>
+                    ))}
                   </div>
-                  {sacramentView === 'baptism' ? (
-                    <BaptismRegistry tenantId={activeTenant.id} />
-                  ) : (
-                    <MarriageRegistry tenantId={activeTenant.id} />
-                  )}
+                  <SacramentRegistry tenantId={activeTenant.id} type={sacramentView} />
                 </div>
               )}
               {activeTab === 'pastoralis' && activeTenant && (
