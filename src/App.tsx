@@ -59,7 +59,7 @@ const levelLabels: Record<Level, string> = {
 };
 
 function App() {
-  const { activeTenant, isLoading: isTenantLoading } = useTenant();
+  const { activeTenant, allTenants, switchTenant, isLoading: isTenantLoading } = useTenant();
   const { user, profile, isLoading: isAuthLoading, signOut } = useAuth();
 
   const userRole = profile?.role || 'fiel';
