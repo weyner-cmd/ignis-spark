@@ -1,5 +1,4 @@
 import { X } from 'lucide-react';
-import { X } from 'lucide-react';
 import './ModalCloseButton.css';
 
 interface Props {
