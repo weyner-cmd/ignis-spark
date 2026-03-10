@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   Home,
+  Calendar,
   ScrollText,
   MapPin,
   Users,
