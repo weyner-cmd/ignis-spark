@@ -43,6 +43,32 @@
   --transition-slow: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* ─── Light Theme ─── */
+[data-theme="light"] {
+  --primary: #A32121;
+  --primary-light: #c93a3a;
+  --accent: #b8912e;
+  --accent-color: #b8912e;
+  --success: #2d7a50;
+  --background: #f4f4f8;
+  --surface: #ffffff;
+  --surface-2: #eeeef2;
+  --surface-hover: #e8e8f0;
+  --border: #d0d0dc;
+  --text-primary: #1a1a2e;
+  --text-secondary: #5a5a72;
+
+  --status-confirmed: #27ae60;
+  --status-pending: #e08e0b;
+  --status-completed: #8e44ad;
+  --status-cancelled: #6b7b7c;
+  --status-remarcado: #c0392b;
+
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.12);
+}
+
 * {
   margin: 0;
   padding: 0;
