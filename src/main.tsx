@@ -22,8 +22,8 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
-        <TenantProvider>
-          <AuthProvider>
+        <AuthProvider>
+          <TenantProvider>
             <App />
             <Toaster
               position="bottom-right"
@@ -45,8 +45,8 @@ createRoot(document.getElementById('root')!).render(
                 },
               }}
             />
-          </AuthProvider>
-        </TenantProvider>
+          </TenantProvider>
+        </AuthProvider>
       </QueryClientProvider>
     </ErrorBoundary>
   </StrictMode>,
