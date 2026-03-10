@@ -236,3 +236,134 @@
   flex-direction: column;
   gap: 32px;
 }
+
+/* ═══════════════════════════════════════ */
+/* Mobile Menu Button                      */
+/* ═══════════════════════════════════════ */
+.mobile-menu-btn {
+  display: none;
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 200;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  padding: 10px;
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-md);
+}
+
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 99;
+}
+
+/* ═══════════════════════════════════════ */
+/* Responsive: Tablet (≤1024px)            */
+/* ═══════════════════════════════════════ */
+@media (max-width: 1024px) {
+  .main-content {
+    margin-left: 0 !important;
+    padding: 24px 20px;
+  }
+
+  .mobile-menu-btn {
+    display: flex;
+  }
+
+  .sidebar-overlay {
+    display: block;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .header-top {
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .header-actions-group {
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .page-title {
+    font-size: 22px;
+  }
+
+  .header-bottom {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .level-switcher select {
+    font-size: 12px;
+  }
+}
+
+/* ═══════════════════════════════════════ */
+/* Responsive: Mobile (≤640px)             */
+/* ═══════════════════════════════════════ */
+@media (max-width: 640px) {
+  .main-content {
+    padding: 16px 12px;
+    padding-top: 60px;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .stat-card {
+    padding: 16px;
+    border-radius: var(--radius-md);
+  }
+
+  .stat-value {
+    font-size: 24px;
+  }
+
+  .page-title {
+    font-size: 18px;
+  }
+
+  .page-subtitle {
+    font-size: 12px;
+  }
+
+  .header-top {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .header-actions-group {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .level-badge {
+    font-size: 10px;
+    padding: 4px 10px;
+  }
+
+  .btn-primary-action {
+    padding: 8px 14px;
+    font-size: 13px;
+  }
+
+  .active-tenant-badge {
+    font-size: 12px;
+  }
+}
