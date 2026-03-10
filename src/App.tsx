@@ -157,10 +157,16 @@ function App() {
         return (
           <>
             <section className="dashboard-grid">
-              <StatCard label="Comunidades" value="8" trend="2 capelas" />
-              <StatCard label="Clero Ativo" value="3" trend="Pe/Diac" />
-              <StatCard label="Missio (Pendente)" value="14" trend="7 urgentes" />
-              <StatCard label="Sacramenta" value="156" trend="Total Ano" />
+              {dynamicKpis.length > 0 ? dynamicKpis.map((k, i) => (
+                <StatCard key={i} label={k.label} value={k.value} trend={k.trend} direction={k.trendDirection} />
+              )) : (
+                <>
+                  <StatCard label="Fiéis" value="…" trend="Carregando" />
+                  <StatCard label="Agendamentos" value="…" trend="Carregando" />
+                  <StatCard label="Realizados" value="…" trend="Carregando" />
+                  <StatCard label="Sacramenta" value="…" trend="Carregando" />
+                </>
+              )}
             </section>
             <div className="dashboard-sections">
               {activeTab === 'home' && (
