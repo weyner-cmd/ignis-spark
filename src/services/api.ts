@@ -456,7 +456,7 @@ export const ignisApi = {
                 .eq('tenant_id', tenantId)
                 .ilike('name', `%${query}%`);
             if (error) throw error;
-            return (data || []) as Person[];
+            return (data || []) as unknown as Person[];
         }
     },
     governance: {
