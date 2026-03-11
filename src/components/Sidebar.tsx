@@ -92,10 +92,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onTabChange, userLe
             {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
             <span>{theme === 'dark' ? 'Modo Claro' : 'Modo Escuro'}</span>
           </button>
-          <a href="#settings" className="nav-item">
-            <Settings />
-            <span>Configurações</span>
-          </a>
         </div>
 
         <div className="user-profile">
