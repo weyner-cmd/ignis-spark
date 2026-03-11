@@ -12,7 +12,8 @@ import {
   FileBarChart,
   Globe,
   Sun,
-  Moon
+  Moon,
+  UserCog
 } from 'lucide-react';
 import './Sidebar.css';
 
