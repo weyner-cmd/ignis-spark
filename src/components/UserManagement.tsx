@@ -97,7 +97,6 @@ export const UserManagement: React.FC = () => {
     }
     setIsCreating(true);
     try {
-      const { data: { session } } = await supabase.auth.getSession();
       const res = await supabase.functions.invoke('manage-user', {
         body: {
           action: 'create',
