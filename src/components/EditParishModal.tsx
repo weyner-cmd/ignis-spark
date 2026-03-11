@@ -10,7 +10,7 @@ import './EditParishModal.css';
 // Schema Validation with Zod
 const schema = z.object({
     name: z.string().min(1, 'Nome é obrigatório'),
-    cnpj: z.string().regex(/^\d{2}\.\d{3}\.\d{3}\/\d{4}\-\d{2}$/, 'CNPJ inválido'),
+    cnpj: z.string().optional().or(z.literal('')),
     status: z.enum(['active', 'inactive', 'implanting']),
     address: z.string().optional(),
     number: z.string().optional(),
@@ -131,7 +131,7 @@ export const EditParishModal: React.FC<EditParishModalProps> = ({ isOpen, onClos
             onClose();
         } catch (err: any) {
             if (err instanceof z.ZodError) {
-                toast.error((err as any).errors[0].message);
+                toast.error(err.issues?.[0]?.message || 'Erro de validação');
             } else {
                 toast.error(err.message || 'Erro ao atualizar paróquia');
             }
