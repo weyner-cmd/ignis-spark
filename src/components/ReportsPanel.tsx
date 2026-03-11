@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
     Printer,
     FileText,
@@ -7,7 +7,6 @@ import {
     Download,
     ChevronRight,
     Search,
-    Filter,
     ArrowLeft,
     BarChart3,
     Loader2,
@@ -15,7 +14,8 @@ import {
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { PieChart, Pie, Cell, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { ignisApi, Sacrament, Appointment, Person } from '../services/api';
+import { ignisApi } from '../services/api';
+import type { Sacrament, Appointment, Person } from '../services/api';
 import { useTenant } from '../contexts/TenantContext';
 import toast from 'react-hot-toast';
 import './ReportsPanel.css';
