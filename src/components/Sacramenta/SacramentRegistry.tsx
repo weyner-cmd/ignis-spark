@@ -14,8 +14,12 @@ import {
     Award,
     Droplets,
     Printer,
+    Pencil,
+    Trash2,
+    Loader2,
     type LucideIcon
 } from 'lucide-react';
+import { toast } from 'react-hot-toast';
 import { ignisApi } from '../../services/api';
 import type { Sacrament } from '../../services/api';
 import { SacramentForm } from './SacramentForm';
@@ -115,6 +119,9 @@ export const SacramentRegistry: React.FC<SacramentRegistryProps> = ({ tenantId, 
     const [searchQuery, setSearchQuery] = useState('');
     const [view, setView] = useState<'list' | 'form'>('list');
     const [selectedRecord, setSelectedRecord] = useState<Sacrament | null>(null);
+    const [editingRecord, setEditingRecord] = useState<Sacrament | null>(null);
+    const [deletingId, setDeletingId] = useState<string | null>(null);
+    const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
     const { activeTenant } = useTenant();
 
     const config = SACRAMENT_CONFIGS[type];
@@ -149,6 +156,25 @@ export const SacramentRegistry: React.FC<SacramentRegistryProps> = ({ tenantId, 
         }
     };
 
+    const handleEdit = (record: Sacrament) => {
+        setEditingRecord(record);
+        setView('form');
+    };
+
+    const handleDelete = async (id: string) => {
+        setDeletingId(id);
+        try {
+            await ignisApi.sacraments.delete(id);
+            setRecords(prev => prev.filter(r => r.id !== id));
+            toast.success('Sacramento excluído com sucesso!');
+        } catch (error: any) {
+            toast.error(error.message || 'Erro ao excluir sacramento');
+        } finally {
+            setDeletingId(null);
+            setConfirmDeleteId(null);
+        }
+    };
+
     const formType = (type === 'first_communion' || type === 'anointing_of_sick')
         ? type as any
         : type as 'baptism' | 'marriage' | 'confirmation';
@@ -164,11 +190,11 @@ export const SacramentRegistry: React.FC<SacramentRegistryProps> = ({ tenantId, 
                         <p style={{ opacity: 0.7, fontSize: '0.9rem' }}>{config.description}</p>
                     </div>
                     {view === 'list' ? (
-                        <button className="btn-primary" onClick={() => setView('form')}>
+                        <button className="btn-primary" onClick={() => { setEditingRecord(null); setView('form'); }}>
                             <Plus size={18} /> Novo Registro
                         </button>
                     ) : (
-                        <button className="btn-secondary" onClick={() => setView('list')}>
+                        <button className="btn-secondary" onClick={() => { setView('list'); setEditingRecord(null); }}>
                             <ArrowLeft size={18} /> Voltar para Lista
                         </button>
                     )}
@@ -221,7 +247,15 @@ export const SacramentRegistry: React.FC<SacramentRegistryProps> = ({ tenantId, 
                                         </div>
                                     ))}
                                 </div>
-                                <div style={{ marginTop: '15px', display: 'flex', justifyContent: 'flex-end' }}>
+                                <div style={{ marginTop: '15px', display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
+                                    <button
+                                        className="btn-secondary"
+                                        style={{ padding: '6px 12px', fontSize: '0.75rem' }}
+                                        onClick={() => handleEdit(record)}
+                                        title="Editar"
+                                    >
+                                        <Pencil size={14} /> Editar
+                                    </button>
                                     <button
                                         className="btn-secondary"
                                         style={{ padding: '6px 12px', fontSize: '0.75rem' }}
@@ -229,6 +263,35 @@ export const SacramentRegistry: React.FC<SacramentRegistryProps> = ({ tenantId, 
                                     >
                                         <Printer size={14} /> Certidão
                                     </button>
+                                    {confirmDeleteId === record.id ? (
+                                        <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
+                                            <span style={{ fontSize: '0.7rem', opacity: 0.7 }}>Confirmar?</span>
+                                            <button
+                                                className="btn-primary"
+                                                style={{ padding: '6px 10px', fontSize: '0.75rem', backgroundColor: '#ef4444' }}
+                                                onClick={() => handleDelete(record.id)}
+                                                disabled={deletingId === record.id}
+                                            >
+                                                {deletingId === record.id ? <Loader2 size={14} className="animate-spin" /> : 'Sim'}
+                                            </button>
+                                            <button
+                                                className="btn-secondary"
+                                                style={{ padding: '6px 10px', fontSize: '0.75rem' }}
+                                                onClick={() => setConfirmDeleteId(null)}
+                                            >
+                                                Não
+                                            </button>
+                                        </div>
+                                    ) : (
+                                        <button
+                                            className="btn-secondary"
+                                            style={{ padding: '6px 12px', fontSize: '0.75rem', color: '#ef4444' }}
+                                            onClick={() => setConfirmDeleteId(record.id)}
+                                            title="Excluir"
+                                        >
+                                            <Trash2 size={14} /> Excluir
+                                        </button>
+                                    )}
                                 </div>
                             </div>
                         ))
@@ -244,10 +307,13 @@ export const SacramentRegistry: React.FC<SacramentRegistryProps> = ({ tenantId, 
                     <SacramentForm
                         tenantId={tenantId}
                         type={formType}
-                        onCancel={() => setView('list')}
+                        editData={editingRecord}
+                        onCancel={() => { setView('list'); setEditingRecord(null); }}
                         onSuccess={() => {
                             setView('list');
+                            setEditingRecord(null);
                             fetchRecords();
+                            toast.success(editingRecord ? 'Sacramento atualizado com sucesso!' : 'Sacramento registrado com sucesso!');
                         }}
                     />
                 </div>

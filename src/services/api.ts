@@ -374,8 +374,33 @@ export const ignisApi = {
                 entryNumber: item.entry_number,
                 subjectName: item.subject_name,
                 details: item.details,
-                createdAt: item.created_at
+            createdAt: item.created_at
             })) as Sacrament[];
+        },
+        update: async (id: string, data: Partial<Sacrament>) => {
+            const payload: Record<string, any> = {};
+            if (data.type !== undefined) payload.type = data.type;
+            if (data.subjectName !== undefined) payload.subject_name = data.subjectName;
+            if (data.subjectId !== undefined) payload.subject_id = data.subjectId || null;
+            if (data.celebrantId !== undefined) payload.celebrant_id = data.celebrantId || null;
+            if (data.celebratoryDate !== undefined) payload.celebratory_date = data.celebratoryDate;
+            if (data.bookNumber !== undefined) payload.book_number = data.bookNumber;
+            if (data.pageNumber !== undefined) payload.page_number = data.pageNumber;
+            if (data.entryNumber !== undefined) payload.entry_number = data.entryNumber;
+            if (data.details !== undefined) payload.details = data.details;
+
+            const { error } = await supabase
+                .from('sacraments')
+                .update(payload)
+                .eq('id', id);
+            if (error) throw error;
+        },
+        delete: async (id: string) => {
+            const { error } = await supabase
+                .from('sacraments')
+                .delete()
+                .eq('id', id);
+            if (error) throw error;
         }
     },
     people: {
