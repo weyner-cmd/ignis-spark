@@ -151,7 +151,7 @@ function App() {
               {activeTab === 'reports' && activeTenant && (
                 <ReportsPanel tenantId={activeTenant.id} />
               )}
-              {activeTab === 'users' && (
+              {activeTab === 'settings' && (
                 <UserManagement />
               )}
             </div>
