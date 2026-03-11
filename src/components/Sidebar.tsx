@@ -13,7 +13,6 @@ import {
   Globe,
   Sun,
   Moon,
-  } from 'lucide-react';
 } from 'lucide-react';
 import './Sidebar.css';
 
