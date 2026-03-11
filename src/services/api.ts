@@ -76,6 +76,19 @@ export interface Sacrament {
     createdAt?: string;
 }
 
+export interface StaffMember {
+    id: string;
+    tenantId: string;
+    name: string;
+    role: string;
+    email?: string;
+    phone?: string;
+    status: 'available' | 'busy' | 'off' | 'inactive';
+    joinedAt?: string;
+    notes?: string;
+    createdAt?: string;
+}
+
 export interface Person {
     id: string;
     tenantId: string;
