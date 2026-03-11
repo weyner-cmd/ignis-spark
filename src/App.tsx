@@ -16,6 +16,7 @@ import { Login } from './components/Login';
 import { Breadcrumbs } from './components/Breadcrumbs';
 import { ReportsPanel } from './components/ReportsPanel';
 import { GlobalPastoralMap } from './components/Governance/GlobalPastoralMap';
+import { UserManagement } from './components/UserManagement';
 import { AppointmentWizard } from './components/AppointmentWizard';
 import { PriestAgenda } from './components/PriestAgenda';
 import { useDashboardKPIs } from './hooks/useDashboardKPIs';
