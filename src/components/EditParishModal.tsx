@@ -131,7 +131,7 @@ export const EditParishModal: React.FC<EditParishModalProps> = ({ isOpen, onClos
             onClose();
         } catch (err: any) {
             if (err instanceof z.ZodError) {
-                toast.error((err as any).errors[0].message);
+                toast.error(err.issues?.[0]?.message || 'Erro de validação');
             } else {
                 toast.error(err.message || 'Erro ao atualizar paróquia');
             }
