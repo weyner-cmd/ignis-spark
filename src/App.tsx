@@ -177,7 +177,7 @@ function App() {
                 <>
                   <MatrizDashboard />
                   <ClergyManager />
-                  <StaffDirectory />
+                  
                 </>
               )}
               {activeTab === 'priest-agenda' && <PriestAgenda />}
