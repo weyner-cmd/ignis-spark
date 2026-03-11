@@ -343,10 +343,14 @@ export type Database = {
           city: string | null
           cnpj: string | null
           created_at: string | null
+          email: string | null
+          foundation_date: string | null
           id: string
           logo_url: string | null
           name: string
           neighborhood: string | null
+          notes: string | null
+          number: string | null
           phone: string | null
           priest_name: string | null
           slogan: string | null
@@ -361,10 +365,14 @@ export type Database = {
           city?: string | null
           cnpj?: string | null
           created_at?: string | null
+          email?: string | null
+          foundation_date?: string | null
           id?: string
           logo_url?: string | null
           name: string
           neighborhood?: string | null
+          notes?: string | null
+          number?: string | null
           phone?: string | null
           priest_name?: string | null
           slogan?: string | null
@@ -379,10 +387,14 @@ export type Database = {
           city?: string | null
           cnpj?: string | null
           created_at?: string | null
+          email?: string | null
+          foundation_date?: string | null
           id?: string
           logo_url?: string | null
           name?: string
           neighborhood?: string | null
+          notes?: string | null
+          number?: string | null
           phone?: string | null
           priest_name?: string | null
           slogan?: string | null
