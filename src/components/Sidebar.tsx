@@ -30,6 +30,7 @@ const navItems = [
   { icon: Wallet, label: 'Administratio', id: 'administratio' },
   { icon: FileBarChart, label: 'Relatórios', id: 'reports' },
   { icon: Globe, label: 'Mapa Global', id: 'global-map' },
+  { icon: UserCog, label: 'Usuários', id: 'users' },
 ];
 
 interface SidebarProps {
