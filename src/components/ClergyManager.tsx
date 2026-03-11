@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { User, Plus, Search, Edit2, Trash2, X, Loader2, Filter } from 'lucide-react';
-import { ignisApi, StaffMember } from '../services/api';
+import { ignisApi } from '../services/api';
+import type { StaffMember } from '../services/api';
 import { useTenant } from '../contexts/TenantContext';
 import toast from 'react-hot-toast';
 import './ClergyManager.css';
