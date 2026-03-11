@@ -178,6 +178,20 @@ export const ignisApi = {
                 members: 0,
                 metrics: '0/mês'
             } as Community;
+        },
+        delete: async (id: string) => {
+            const { error } = await supabase
+                .from('sub_tenants')
+                .delete()
+                .eq('id', id);
+            if (error) throw error;
+        },
+        getLinkedCounts: async (id: string) => {
+            const { count: appts } = await supabase
+                .from('appointments')
+                .select('*', { count: 'exact', head: true })
+                .eq('sub_tenant_id', id);
+            return { appointments: appts || 0 };
         }
     },
     appointments: {

@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Plus, Settings, Trash2, Edit2, Users } from 'lucide-react';
+import { Plus, Settings, Trash2, Edit2, Users, Loader2, AlertTriangle } from 'lucide-react';
 import { UnitSettingsModal } from './UnitSettingsModal';
 import { ignisApi } from '../services/api';
 import type { Community } from '../services/api';
 import { useTenant } from '../contexts/TenantContext';
+import toast from 'react-hot-toast';
 import './CommunitiesManager.css';
 
 export const CommunitiesManager: React.FC = () => {
@@ -12,6 +13,12 @@ export const CommunitiesManager: React.FC = () => {
     const [communities, setCommunities] = useState<Community[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const { activeTenant } = useTenant();
+
+    // Delete state
+    const [deleteTarget, setDeleteTarget] = useState<Community | null>(null);
+    const [deleteLinkedCount, setDeleteLinkedCount] = useState(0);
+    const [isCheckingLinks, setIsCheckingLinks] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     const fetchCommunities = async () => {
         if (activeTenant) {
@@ -26,8 +33,35 @@ export const CommunitiesManager: React.FC = () => {
         fetchCommunities();
     }, [activeTenant]);
 
+    const handleDeleteClick = async (community: Community) => {
+        setDeleteTarget(community);
+        setIsCheckingLinks(true);
+        try {
+            const counts = await ignisApi.communities.getLinkedCounts(community.id);
+            setDeleteLinkedCount(counts.appointments);
+        } catch {
+            setDeleteLinkedCount(0);
+        } finally {
+            setIsCheckingLinks(false);
+        }
+    };
+
+    const confirmDelete = async () => {
+        if (!deleteTarget) return;
+        setIsDeleting(true);
+        try {
+            await ignisApi.communities.delete(deleteTarget.id);
+            setCommunities(prev => prev.filter(c => c.id !== deleteTarget.id));
+            toast.success('Comunidade deletada com sucesso.');
+            setDeleteTarget(null);
+        } catch (err: any) {
+            toast.error(err?.message || 'Erro ao deletar comunidade.');
+        } finally {
+            setIsDeleting(false);
+        }
+    };
+
     if (isLoading) {
-        // ... loading state same ...
         return (
             <div className="communities-container">
                 <div className="section-header">
@@ -36,7 +70,6 @@ export const CommunitiesManager: React.FC = () => {
                         <div className="skeleton-text skeleton" style={{ width: '300px' }}></div>
                     </div>
                 </div>
-
                 <div className="units-table-container glass">
                     <table className="units-table">
                         <thead>
@@ -116,10 +149,10 @@ export const CommunitiesManager: React.FC = () => {
                                         <button className="action-btn" onClick={() => setSelectedUnit(community)}>
                                             <Settings size={18} />
                                         </button>
-                                        <button className="action-btn">
+                                        <button className="action-btn" onClick={() => setSelectedUnit(community)}>
                                             <Edit2 size={18} />
                                         </button>
-                                        <button className="action-btn delete">
+                                        <button className="action-btn delete" onClick={() => handleDeleteClick(community)}>
                                             <Trash2 size={18} />
                                         </button>
                                     </div>
@@ -139,6 +172,44 @@ export const CommunitiesManager: React.FC = () => {
                         fetchCommunities();
                     }}
                 />
+            )}
+
+            {/* Delete Confirmation Modal */}
+            {deleteTarget && (
+                <div className="delete-modal-overlay" onClick={() => !isDeleting && setDeleteTarget(null)}>
+                    <div className="delete-modal glass" onClick={e => e.stopPropagation()}>
+                        <div className="delete-modal-icon">
+                            <AlertTriangle size={32} />
+                        </div>
+                        <h3>Deletar Comunidade</h3>
+                        {isCheckingLinks ? (
+                            <div className="delete-loading">
+                                <Loader2 className="spin" size={20} />
+                                <p>Verificando vínculos...</p>
+                            </div>
+                        ) : (
+                            <>
+                                <p className="delete-message">
+                                    Tem certeza que deseja deletar a comunidade <strong>{deleteTarget.name}</strong>? Esta ação não pode ser desfeita.
+                                </p>
+                                {deleteLinkedCount > 0 && (
+                                    <div className="delete-warning">
+                                        <AlertTriangle size={16} />
+                                        <span>Esta comunidade tem <strong>{deleteLinkedCount}</strong> agendamento(s) vinculado(s). Eles serão removidos junto.</span>
+                                    </div>
+                                )}
+                                <div className="delete-modal-actions">
+                                    <button className="btn-secondary" onClick={() => setDeleteTarget(null)} disabled={isDeleting}>
+                                        Cancelar
+                                    </button>
+                                    <button className="btn-danger" onClick={confirmDelete} disabled={isDeleting}>
+                                        {isDeleting ? <><Loader2 className="spin" size={16} /> Deletando...</> : 'Deletar'}
+                                    </button>
+                                </div>
+                            </>
+                        )}
+                    </div>
+                </div>
             )}
         </div>
     );
