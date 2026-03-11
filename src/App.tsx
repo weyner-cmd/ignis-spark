@@ -151,6 +151,9 @@ function App() {
               {activeTab === 'reports' && activeTenant && (
                 <ReportsPanel tenantId={activeTenant.id} />
               )}
+              {activeTab === 'users' && (
+                <UserManagement />
+              )}
             </div>
           </>
         );
