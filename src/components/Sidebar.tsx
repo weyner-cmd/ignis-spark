@@ -13,7 +13,6 @@ import {
   Globe,
   Sun,
   Moon,
-  UserCog
 } from 'lucide-react';
 import './Sidebar.css';
 
@@ -30,7 +29,7 @@ const navItems = [
   { icon: Wallet, label: 'Administratio', id: 'administratio' },
   { icon: FileBarChart, label: 'Relatórios', id: 'reports' },
   { icon: Globe, label: 'Mapa Global', id: 'global-map' },
-  { icon: UserCog, label: 'Usuários', id: 'users' },
+  { icon: Settings, label: 'Configurações', id: 'settings' },
 ];
 
 interface SidebarProps {
@@ -48,7 +47,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onTabChange, userLe
     if (item.id === 'home') return true;
     if (item.id === 'priest-agenda') return userLevel === 'super' || userLevel === 'matriz';
     if (item.id === 'global-map') return userLevel === 'super';
-    if (item.id === 'users') return userLevel === 'super';
+    if (item.id === 'settings') return userLevel === 'super';
     if (!activeTenant?.active_modules) return true;
     return activeTenant.active_modules.includes(item.id);
   });
@@ -92,10 +91,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onTabChange, userLe
             {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
             <span>{theme === 'dark' ? 'Modo Claro' : 'Modo Escuro'}</span>
           </button>
-          <a href="#settings" className="nav-item">
-            <Settings />
-            <span>Configurações</span>
-          </a>
         </div>
 
         <div className="user-profile">

@@ -20,6 +20,7 @@ interface UserProfile {
 
 const ROLE_OPTIONS = [
   { value: 'fiel', label: 'Fiel' },
+  { value: 'padre', label: 'Padre' },
   { value: 'comunidade_lead', label: 'Líder de Comunidade' },
   { value: 'matriz_admin', label: 'Admin Paróquia' },
   { value: 'super_admin', label: 'Super Admin' },
@@ -27,6 +28,7 @@ const ROLE_OPTIONS = [
 
 const roleLabelMap: Record<string, string> = {
   fiel: 'Fiel',
+  padre: 'Padre',
   comunidade_lead: 'Líder Comunidade',
   matriz_admin: 'Admin Paróquia',
   super_admin: 'Super Admin',
