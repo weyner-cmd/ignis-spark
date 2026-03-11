@@ -12,7 +12,8 @@ import {
   FileBarChart,
   Globe,
   Sun,
-  Moon
+  Moon,
+  UserCog
 } from 'lucide-react';
 import './Sidebar.css';
 
@@ -29,6 +30,7 @@ const navItems = [
   { icon: Wallet, label: 'Administratio', id: 'administratio' },
   { icon: FileBarChart, label: 'Relatórios', id: 'reports' },
   { icon: Globe, label: 'Mapa Global', id: 'global-map' },
+  { icon: UserCog, label: 'Usuários', id: 'users' },
 ];
 
 interface SidebarProps {
@@ -46,6 +48,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onTabChange, userLe
     if (item.id === 'home') return true;
     if (item.id === 'priest-agenda') return userLevel === 'super' || userLevel === 'matriz';
     if (item.id === 'global-map') return userLevel === 'super';
+    if (item.id === 'users') return userLevel === 'super';
     if (!activeTenant?.active_modules) return true;
     return activeTenant.active_modules.includes(item.id);
   });
