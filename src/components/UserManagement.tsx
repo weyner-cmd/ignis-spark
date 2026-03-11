@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import {
   Plus, Search, Edit2, Trash2, X, Save, Loader2,
-  UserCheck, UserX, ShieldCheck, Users as UsersIcon
+  UserCheck, UserX, Users as UsersIcon
 } from 'lucide-react';
 import { supabase } from '../services/supabase';
 import { useTenant } from '../contexts/TenantContext';
