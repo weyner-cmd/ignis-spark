@@ -13,7 +13,7 @@ import {
   Globe,
   Sun,
   Moon,
-  UserCog
+  } from 'lucide-react';
 } from 'lucide-react';
 import './Sidebar.css';
 
