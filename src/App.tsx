@@ -6,7 +6,7 @@ import { OnboardingModal } from './components/OnboardingModal';
 import { SystemHealth } from './components/SystemHealth';
 import { MatrizDashboard } from './components/MatrizDashboard';
 import { ClergyManager } from './components/ClergyManager';
-import { StaffDirectory } from './components/StaffDirectory';
+
 import { LocalTriagem } from './components/LocalTriagem';
 import { FielHome } from './components/FielHome';
 import { SacramentRegistry } from './components/Sacramenta/SacramentRegistry';
@@ -177,7 +177,7 @@ function App() {
                 <>
                   <MatrizDashboard />
                   <ClergyManager />
-                  <StaffDirectory />
+                  
                 </>
               )}
               {activeTab === 'priest-agenda' && <PriestAgenda />}

@@ -76,6 +76,19 @@ export interface Sacrament {
     createdAt?: string;
 }
 
+export interface StaffMember {
+    id: string;
+    tenantId: string;
+    name: string;
+    role: string;
+    email?: string;
+    phone?: string;
+    status: 'available' | 'busy' | 'off' | 'inactive';
+    joinedAt?: string;
+    notes?: string;
+    createdAt?: string;
+}
+
 export interface Person {
     id: string;
     tenantId: string;
@@ -497,6 +510,94 @@ export const ignisApi = {
             if (error) throw error;
             return (data || []) as unknown as Person[];
         }
+    },
+    staff: {
+        getByTenant: async (tenantId: string) => {
+            const { data, error } = await supabase
+                .from('staff')
+                .select('*')
+                .eq('tenant_id', tenantId)
+                .order('name', { ascending: true });
+            if (error) throw error;
+            return (data || []).map((item: any) => ({
+                id: item.id,
+                tenantId: item.tenant_id,
+                name: item.name,
+                role: item.role,
+                email: item.email,
+                phone: item.phone,
+                status: item.status,
+                joinedAt: item.joined_at,
+                notes: item.notes,
+                createdAt: item.created_at,
+            })) as StaffMember[];
+        },
+        create: async (data: Omit<StaffMember, 'id' | 'createdAt'>) => {
+            const { data: newItem, error } = await supabase
+                .from('staff')
+                .insert([{
+                    tenant_id: data.tenantId,
+                    name: data.name,
+                    role: data.role,
+                    email: data.email,
+                    phone: data.phone,
+                    status: data.status || 'available',
+                    joined_at: data.joinedAt,
+                    notes: data.notes,
+                }])
+                .select()
+                .single();
+            if (error) throw error;
+            return {
+                id: newItem.id,
+                tenantId: newItem.tenant_id,
+                name: newItem.name,
+                role: newItem.role,
+                email: newItem.email,
+                phone: newItem.phone,
+                status: newItem.status,
+                joinedAt: newItem.joined_at,
+                notes: newItem.notes,
+                createdAt: newItem.created_at,
+            } as StaffMember;
+        },
+        update: async (id: string, data: Partial<StaffMember>) => {
+            const payload: Record<string, any> = {};
+            if (data.name !== undefined) payload.name = data.name;
+            if (data.role !== undefined) payload.role = data.role;
+            if (data.email !== undefined) payload.email = data.email;
+            if (data.phone !== undefined) payload.phone = data.phone;
+            if (data.status !== undefined) payload.status = data.status;
+            if (data.joinedAt !== undefined) payload.joined_at = data.joinedAt;
+            if (data.notes !== undefined) payload.notes = data.notes;
+
+            const { data: updated, error } = await supabase
+                .from('staff')
+                .update(payload)
+                .eq('id', id)
+                .select()
+                .single();
+            if (error) throw error;
+            return {
+                id: updated.id,
+                tenantId: updated.tenant_id,
+                name: updated.name,
+                role: updated.role,
+                email: updated.email,
+                phone: updated.phone,
+                status: updated.status,
+                joinedAt: updated.joined_at,
+                notes: updated.notes,
+                createdAt: updated.created_at,
+            } as StaffMember;
+        },
+        delete: async (id: string) => {
+            const { error } = await supabase
+                .from('staff')
+                .delete()
+                .eq('id', id);
+            if (error) throw error;
+        },
     },
     governance: {
         transferCommunity: async (communityId: string, targetTenantId: string) => {

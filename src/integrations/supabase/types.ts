@@ -304,6 +304,56 @@ export type Database = {
           },
         ]
       }
+      staff: {
+        Row: {
+          created_at: string | null
+          email: string | null
+          id: string
+          joined_at: string | null
+          name: string
+          notes: string | null
+          phone: string | null
+          role: string
+          status: string
+          tenant_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          joined_at?: string | null
+          name: string
+          notes?: string | null
+          phone?: string | null
+          role?: string
+          status?: string
+          tenant_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          joined_at?: string | null
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          role?: string
+          status?: string
+          tenant_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "staff_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       sub_tenants: {
         Row: {
           address: string | null
