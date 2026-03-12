@@ -3,7 +3,6 @@ import { Menu } from 'lucide-react';
 import { Sidebar } from './components/Sidebar';
 import { ParishesTable } from './components/ParishesTable';
 import { OnboardingModal } from './components/OnboardingModal';
-import { SystemHealth } from './components/SystemHealth';
 import { MatrizDashboard } from './components/MatrizDashboard';
 import { ClergyManager } from './components/ClergyManager';
 
@@ -59,6 +58,49 @@ const levelLabels: Record<Level, string> = {
   fiel: 'Visão Fiel',
 };
 
+// B4: Tab-aware page titles and subtitles
+const getPageTitle = (level: Level, tab: string): string => {
+  const tabTitles: Record<string, string> = {
+    'priest-agenda': 'Agenda do Padre',
+    sacramenta: 'Sacramenta',
+    missio: 'Missio',
+    pastoralis: 'Pastoralis',
+    reports: 'Relatórios',
+    'global-map': 'Mapa Pastoral Global',
+    users: 'Gestão de Usuários',
+    settings: 'Configurações',
+  };
+  if (tab !== 'home' && tabTitles[tab]) return tabTitles[tab];
+
+  switch (level) {
+    case 'super': return 'Painel Administrativo';
+    case 'matriz': return 'Gestão Cenáculo';
+    case 'comunidade': return 'Missão Local';
+    case 'fiel': return 'Minha Chama';
+  }
+};
+
+const getPageSubtitle = (level: Level, tab: string): string => {
+  const tabSubtitles: Record<string, string> = {
+    'priest-agenda': 'Horários e compromissos do pároco.',
+    sacramenta: 'Registro e gestão dos sacramentos.',
+    missio: 'Coordenação das comunidades e clero.',
+    pastoralis: 'Diretório de fiéis e famílias.',
+    reports: 'Relatórios gerenciais e exportação.',
+    'global-map': 'Visão geográfica das comunidades.',
+    users: 'Gerenciamento de acessos e permissões.',
+    settings: 'Configurações do sistema.',
+  };
+  if (tab !== 'home' && tabSubtitles[tab]) return tabSubtitles[tab];
+
+  switch (level) {
+    case 'super': return 'Pulso global do ecossistema IGNIS.';
+    case 'matriz': return 'Coordenação das comunidades e clero.';
+    case 'comunidade': return 'Operação e triagem pastoral local.';
+    case 'fiel': return 'Seu histórico e conexão com a Igreja.';
+  }
+};
+
 function App() {
   const { activeTenant, allTenants, switchTenant, isLoading: isTenantLoading } = useTenant();
   const { user, profile, isLoading: isAuthLoading, signOut } = useAuth();
@@ -75,12 +117,10 @@ function App() {
   const [isWizardOpen, setIsWizardOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  // Update currentLevel when profile loads and current level isn't allowed
   useEffect(() => {
     if (profile?.role && !allowedLevels.includes(currentLevel)) {
       setCurrentLevel(defaultLevel);
     } else if (profile?.role && currentLevel === 'fiel' && defaultLevel !== 'fiel') {
-      // First load: profile just arrived, upgrade from default 'fiel'
       setCurrentLevel(defaultLevel);
     }
   }, [profile?.role]);
@@ -110,13 +150,7 @@ function App() {
             </section>
             <div className="dashboard-sections">
               {activeTab === 'home' && (
-                <>
-                  <SystemHealth />
-                  <ParishesTable refreshTrigger={refreshTrigger} />
-                </>
-              )}
-              {activeTab === 'priest-agenda' && (
-                <PriestAgenda />
+                <ParishesTable refreshTrigger={refreshTrigger} />
               )}
               {activeTab === 'global-map' && (
                 <GlobalPastoralMap />
@@ -151,7 +185,7 @@ function App() {
               {activeTab === 'reports' && activeTenant && (
                 <ReportsPanel tenantId={activeTenant.id} />
               )}
-              {activeTab === 'settings' && (
+              {activeTab === 'users' && (
                 <UserManagement />
               )}
             </div>
@@ -177,7 +211,6 @@ function App() {
                 <>
                   <MatrizDashboard />
                   <ClergyManager />
-                  
                 </>
               )}
               {activeTab === 'priest-agenda' && <PriestAgenda />}
@@ -208,6 +241,9 @@ function App() {
               )}
               {activeTab === 'reports' && activeTenant && (
                 <ReportsPanel tenantId={activeTenant.id} />
+              )}
+              {activeTab === 'users' && (
+                <UserManagement />
               )}
             </div>
           </>
@@ -331,28 +367,17 @@ function App() {
 
           <div className="header-bottom">
             <div>
-              <Breadcrumbs level={currentLevel} />
-              <h1 className="page-title">
-                {currentLevel === 'super' && 'Dashboard de Infraestrutura'}
-                {currentLevel === 'matriz' && 'Gestão Cenáculo'}
-                {currentLevel === 'comunidade' && 'Missão Local'}
-                {currentLevel === 'fiel' && 'Minha Chama'}
-              </h1>
-              <p className="page-subtitle">
-                {currentLevel === 'super' && 'Pulso global do ecossistema IGNIS.'}
-                {currentLevel === 'matriz' && 'Coordenação das comunidades e clero.'}
-                {currentLevel === 'comunidade' && 'Operação e triagem pastoral local.'}
-                {currentLevel === 'fiel' && 'Seu histórico e conexão com a Igreja.'}
-              </p>
+              <Breadcrumbs level={currentLevel} activeTab={activeTab} onNavigate={setActiveTab} />
+              <h1 className="page-title">{getPageTitle(currentLevel, activeTab)}</h1>
+              <p className="page-subtitle">{getPageSubtitle(currentLevel, activeTab)}</p>
             </div>
 
-            {currentLevel === 'super' && (
+            {currentLevel === 'super' && activeTab === 'home' && (
               <button className="btn-primary-action" onClick={() => setIsOnboardingOpen(true)}>
                 <Plus size={18} />
                 <span>Novo Onboarding</span>
               </button>
             )}
-
           </div>
         </header>
 
