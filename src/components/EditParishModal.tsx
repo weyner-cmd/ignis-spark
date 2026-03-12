@@ -116,6 +116,8 @@ export const EditParishModal: React.FC<EditParishModalProps> = ({ isOpen, onClos
 
                 const { data: publicUrlData } = supabase.storage.from('parishes').getPublicUrl(fileName);
                 finalLogoUrl = publicUrlData.publicUrl;
+                // B10: Update preview with actual public URL
+                setLogoPreview(finalLogoUrl);
             }
 
             const updatePayload = {

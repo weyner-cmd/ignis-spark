@@ -10,8 +10,17 @@
     align-items: center;
     gap: 6px;
     font-size: 0.75rem;
-    color: var(--text-muted);
+    color: var(--text-secondary);
     font-weight: 500;
+}
+
+.breadcrumb-clickable {
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.breadcrumb-clickable:hover {
+    color: var(--accent-color);
 }
 
 .breadcrumb-icon {
@@ -25,7 +34,7 @@
 }
 
 .breadcrumb-separator {
-    color: var(--text-muted);
+    color: var(--text-secondary);
     opacity: 0.4;
 }
 

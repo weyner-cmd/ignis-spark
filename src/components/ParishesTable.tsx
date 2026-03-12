@@ -171,6 +171,8 @@ export const ParishesTable: React.FC<{ refreshTrigger?: number }> = ({ refreshTr
                 tenant={selectedTenant}
             />
 
+            {/* B13: Reset selectedTenant on EditParishModal close to prevent stale state */}
+
             {selectedTenant && (
                 <EditParishModal
                     isOpen={isEditModalOpen}
