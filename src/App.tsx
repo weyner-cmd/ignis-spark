@@ -417,6 +417,11 @@ function App() {
           onClose={() => setIsWizardOpen(false)}
           tenantId={activeTenant?.id}
         />
+
+        <ProfileModal
+          isOpen={isProfileOpen}
+          onClose={() => setIsProfileOpen(false)}
+        />
       </main>
     </div>
   );
