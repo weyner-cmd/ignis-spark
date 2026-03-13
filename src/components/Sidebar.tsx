@@ -40,9 +40,10 @@ interface SidebarProps {
   onTabChange: (tabId: string) => void;
   userLevel?: string;
   isOpen?: boolean;
+  onProfileClick?: () => void;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onTabChange, userLevel, isOpen }) => {
+export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onTabChange, userLevel, isOpen, onProfileClick }) => {
   const { activeTenant } = useTenant();
   const { profile } = useAuth();
   const { theme, toggleTheme } = useTheme();
