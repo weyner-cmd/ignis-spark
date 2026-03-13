@@ -110,7 +110,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onTabChange, userLe
           </button>
         </div>
 
-        <div className="user-profile">
+        <div className="user-profile" onClick={onProfileClick} style={{ cursor: onProfileClick ? 'pointer' : 'default' }}>
           <div className="avatar">{avatarLetter}</div>
           <div className="user-info">
             <span className="user-name">{displayName}</span>
