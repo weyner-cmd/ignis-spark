@@ -96,6 +96,197 @@ export type Database = {
           },
         ]
       }
+      parish_assets: {
+        Row: {
+          acquisition_date: string | null
+          category: string
+          condition: string | null
+          created_at: string | null
+          estimated_value: number | null
+          id: string
+          location: string | null
+          name: string
+          notes: string | null
+          tenant_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          acquisition_date?: string | null
+          category?: string
+          condition?: string | null
+          created_at?: string | null
+          estimated_value?: number | null
+          id?: string
+          location?: string | null
+          name: string
+          notes?: string | null
+          tenant_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          acquisition_date?: string | null
+          category?: string
+          condition?: string | null
+          created_at?: string | null
+          estimated_value?: number | null
+          id?: string
+          location?: string | null
+          name?: string
+          notes?: string | null
+          tenant_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "parish_assets_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pastoral_events: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          event_date: string
+          group_id: string
+          id: string
+          tenant_id: string
+          title: string
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          event_date: string
+          group_id: string
+          id?: string
+          tenant_id: string
+          title: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          event_date?: string
+          group_id?: string
+          id?: string
+          tenant_id?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pastoral_events_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "pastoral_groups"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pastoral_events_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pastoral_groups: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          name: string
+          status: string | null
+          tenant_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name: string
+          status?: string | null
+          tenant_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name?: string
+          status?: string | null
+          tenant_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pastoral_groups_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pastoral_members: {
+        Row: {
+          created_at: string | null
+          group_id: string
+          id: string
+          mandate_end: string | null
+          mandate_start: string | null
+          person_id: string | null
+          person_name: string
+          role: string
+          tenant_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          group_id: string
+          id?: string
+          mandate_end?: string | null
+          mandate_start?: string | null
+          person_id?: string | null
+          person_name: string
+          role?: string
+          tenant_id: string
+        }
+        Update: {
+          created_at?: string | null
+          group_id?: string
+          id?: string
+          mandate_end?: string | null
+          mandate_start?: string | null
+          person_id?: string | null
+          person_name?: string
+          role?: string
+          tenant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pastoral_members_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "pastoral_groups"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pastoral_members_person_id_fkey"
+            columns: ["person_id"]
+            isOneToOne: false
+            referencedRelation: "people"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pastoral_members_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       people: {
         Row: {
           address: string | null
@@ -157,6 +348,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          avatar_url: string | null
           created_at: string | null
           full_name: string | null
           id: string
@@ -168,6 +360,7 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          avatar_url?: string | null
           created_at?: string | null
           full_name?: string | null
           id: string
@@ -179,6 +372,7 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          avatar_url?: string | null
           created_at?: string | null
           full_name?: string | null
           id?: string
@@ -454,6 +648,53 @@ export type Database = {
           zip_code?: string | null
         }
         Relationships: []
+      }
+      tithes: {
+        Row: {
+          amount: number
+          category: string
+          created_at: string | null
+          donor_name: string
+          id: string
+          notes: string | null
+          payment_method: string | null
+          tenant_id: string
+          tithe_date: string
+          updated_at: string | null
+        }
+        Insert: {
+          amount?: number
+          category?: string
+          created_at?: string | null
+          donor_name: string
+          id?: string
+          notes?: string | null
+          payment_method?: string | null
+          tenant_id: string
+          tithe_date?: string
+          updated_at?: string | null
+        }
+        Update: {
+          amount?: number
+          category?: string
+          created_at?: string | null
+          donor_name?: string
+          id?: string
+          notes?: string | null
+          payment_method?: string | null
+          tenant_id?: string
+          tithe_date?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tithes_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
