@@ -23,7 +23,7 @@
 
 ## Phase 2: Melhorias de Produto (M1–M5)
 - [x] M1: Branding IGNIS consistente nos módulos ✅
-- [x] M2: IGNIS Administratio (financeiro/patrimônio) ✅ _(Financeiro Draft 1 concluído)_
-- [x] M3: Edição de perfil do usuário com foto ✅
+- [x] M2: IGNIS Administratio (financeiro/patrimônio) ✅ _(Dízimos + Patrimônio CRUD completo com tabelas e RLS)_
+- [x] M3: Edição de perfil do usuário com foto ✅ _(ProfileModal com upload avatar, alteração de nome e senha)_
 - [ ] M4: Internacionalização (i18next) (stand by)
-- [x] M5: IGNIS Pastoralis expandido com gestão de pastorais ✅
+- [x] M5: IGNIS Pastoralis expandido com gestão de pastorais ✅ _(Pastorais, membros com cargos/mandatos, eventos)_
