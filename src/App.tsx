@@ -11,6 +11,7 @@ import { FielHome } from './components/FielHome';
 import { SacramentRegistry } from './components/Sacramenta/SacramentRegistry';
 import type { SacramentType } from './components/Sacramenta/SacramentRegistry';
 import { PeopleDirectory } from './components/Pastoralis/PeopleDirectory';
+import { PastoralGroups } from './components/Pastoralis/PastoralGroups';
 import { Login } from './components/Login';
 import { Breadcrumbs } from './components/Breadcrumbs';
 import { ReportsPanel } from './components/ReportsPanel';
@@ -18,6 +19,8 @@ import { GlobalPastoralMap } from './components/Governance/GlobalPastoralMap';
 import { UserManagement } from './components/UserManagement';
 import { AppointmentWizard } from './components/AppointmentWizard';
 import { PriestAgenda } from './components/PriestAgenda';
+import { Administratio } from './components/Administratio/Administratio';
+import { ProfileModal } from './components/ProfileModal';
 import { useDashboardKPIs } from './hooks/useDashboardKPIs';
 import {
   Plus,
@@ -116,6 +119,8 @@ function App() {
   const [sacramentView, setSacramentView] = useState<SacramentType>('baptism');
   const [isWizardOpen, setIsWizardOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [pastoralTab, setPastoralTab] = useState<'fieis' | 'pastorais'>('fieis');
 
   useEffect(() => {
     if (profile?.role && !allowedLevels.includes(currentLevel)) {
@@ -180,7 +185,16 @@ function App() {
                 </div>
               )}
               {activeTab === 'pastoralis' && activeTenant && (
-                <PeopleDirectory tenantId={activeTenant.id} />
+                <div>
+                  <div className="sub-nav glass" style={{ marginBottom: '20px', padding: '8px', display: 'flex', gap: '6px', borderRadius: '12px' }}>
+                    <button className={`btn-secondary ${pastoralTab === 'fieis' ? 'active-tab' : ''}`} onClick={() => setPastoralTab('fieis')} style={{ flex: 1, color: pastoralTab === 'fieis' ? 'var(--accent-color)' : 'inherit', fontSize: '0.85rem' }}>Fiéis</button>
+                    <button className={`btn-secondary ${pastoralTab === 'pastorais' ? 'active-tab' : ''}`} onClick={() => setPastoralTab('pastorais')} style={{ flex: 1, color: pastoralTab === 'pastorais' ? 'var(--accent-color)' : 'inherit', fontSize: '0.85rem' }}>Pastorais</button>
+                  </div>
+                  {pastoralTab === 'fieis' ? <PeopleDirectory tenantId={activeTenant.id} /> : <PastoralGroups tenantId={activeTenant.id} />}
+                </div>
+              )}
+              {activeTab === 'administratio' && activeTenant && (
+                <Administratio tenantId={activeTenant.id} />
               )}
               {activeTab === 'reports' && activeTenant && (
                 <ReportsPanel tenantId={activeTenant.id} />
@@ -237,7 +251,16 @@ function App() {
                 </div>
               )}
               {activeTab === 'pastoralis' && activeTenant && (
-                <PeopleDirectory tenantId={activeTenant.id} />
+                <div>
+                  <div className="sub-nav glass" style={{ marginBottom: '20px', padding: '8px', display: 'flex', gap: '6px', borderRadius: '12px' }}>
+                    <button className={`btn-secondary ${pastoralTab === 'fieis' ? 'active-tab' : ''}`} onClick={() => setPastoralTab('fieis')} style={{ flex: 1, color: pastoralTab === 'fieis' ? 'var(--accent-color)' : 'inherit', fontSize: '0.85rem' }}>Fiéis</button>
+                    <button className={`btn-secondary ${pastoralTab === 'pastorais' ? 'active-tab' : ''}`} onClick={() => setPastoralTab('pastorais')} style={{ flex: 1, color: pastoralTab === 'pastorais' ? 'var(--accent-color)' : 'inherit', fontSize: '0.85rem' }}>Pastorais</button>
+                  </div>
+                  {pastoralTab === 'fieis' ? <PeopleDirectory tenantId={activeTenant.id} /> : <PastoralGroups tenantId={activeTenant.id} />}
+                </div>
+              )}
+              {activeTab === 'administratio' && activeTenant && (
+                <Administratio tenantId={activeTenant.id} />
               )}
               {activeTab === 'reports' && activeTenant && (
                 <ReportsPanel tenantId={activeTenant.id} />
@@ -296,6 +319,7 @@ function App() {
             onTabChange={(id) => { setActiveTab(id); setIsSidebarOpen(false); }}
             userLevel={profile?.role === 'super_admin' ? 'super' : currentLevel}
             isOpen={isSidebarOpen}
+            onProfileClick={() => setIsProfileOpen(true)}
           />
         </>
       )}
@@ -392,6 +416,11 @@ function App() {
           isOpen={isWizardOpen}
           onClose={() => setIsWizardOpen(false)}
           tenantId={activeTenant?.id}
+        />
+
+        <ProfileModal
+          isOpen={isProfileOpen}
+          onClose={() => setIsProfileOpen(false)}
         />
       </main>
     </div>
