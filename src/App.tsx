@@ -319,6 +319,7 @@ function App() {
             onTabChange={(id) => { setActiveTab(id); setIsSidebarOpen(false); }}
             userLevel={profile?.role === 'super_admin' ? 'super' : currentLevel}
             isOpen={isSidebarOpen}
+            onProfileClick={() => setIsProfileOpen(true)}
           />
         </>
       )}
