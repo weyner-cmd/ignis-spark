@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import {
   Wallet, Plus, Trash2, Edit2, DollarSign, Package,
-  TrendingUp, Calendar, Search, Filter, X, Save
+  Search, X, Save
 } from 'lucide-react';
 import { supabase } from '../../integrations/supabase/client';
-import { useTenant } from '../../contexts/TenantContext';
 import toast from 'react-hot-toast';
 import './Administratio.css';
 
