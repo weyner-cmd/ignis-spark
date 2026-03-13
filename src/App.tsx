@@ -11,6 +11,7 @@ import { FielHome } from './components/FielHome';
 import { SacramentRegistry } from './components/Sacramenta/SacramentRegistry';
 import type { SacramentType } from './components/Sacramenta/SacramentRegistry';
 import { PeopleDirectory } from './components/Pastoralis/PeopleDirectory';
+import { PastoralGroups } from './components/Pastoralis/PastoralGroups';
 import { Login } from './components/Login';
 import { Breadcrumbs } from './components/Breadcrumbs';
 import { ReportsPanel } from './components/ReportsPanel';
@@ -18,6 +19,8 @@ import { GlobalPastoralMap } from './components/Governance/GlobalPastoralMap';
 import { UserManagement } from './components/UserManagement';
 import { AppointmentWizard } from './components/AppointmentWizard';
 import { PriestAgenda } from './components/PriestAgenda';
+import { Administratio } from './components/Administratio/Administratio';
+import { ProfileModal } from './components/ProfileModal';
 import { useDashboardKPIs } from './hooks/useDashboardKPIs';
 import {
   Plus,
