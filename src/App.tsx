@@ -251,7 +251,16 @@ function App() {
                 </div>
               )}
               {activeTab === 'pastoralis' && activeTenant && (
-                <PeopleDirectory tenantId={activeTenant.id} />
+                <div>
+                  <div className="sub-nav glass" style={{ marginBottom: '20px', padding: '8px', display: 'flex', gap: '6px', borderRadius: '12px' }}>
+                    <button className={`btn-secondary ${pastoralTab === 'fieis' ? 'active-tab' : ''}`} onClick={() => setPastoralTab('fieis')} style={{ flex: 1, color: pastoralTab === 'fieis' ? 'var(--accent-color)' : 'inherit', fontSize: '0.85rem' }}>Fiéis</button>
+                    <button className={`btn-secondary ${pastoralTab === 'pastorais' ? 'active-tab' : ''}`} onClick={() => setPastoralTab('pastorais')} style={{ flex: 1, color: pastoralTab === 'pastorais' ? 'var(--accent-color)' : 'inherit', fontSize: '0.85rem' }}>Pastorais</button>
+                  </div>
+                  {pastoralTab === 'fieis' ? <PeopleDirectory tenantId={activeTenant.id} /> : <PastoralGroups tenantId={activeTenant.id} />}
+                </div>
+              )}
+              {activeTab === 'administratio' && activeTenant && (
+                <Administratio tenantId={activeTenant.id} />
               )}
               {activeTab === 'reports' && activeTenant && (
                 <ReportsPanel tenantId={activeTenant.id} />
