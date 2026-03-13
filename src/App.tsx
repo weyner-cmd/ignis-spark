@@ -119,6 +119,8 @@ function App() {
   const [sacramentView, setSacramentView] = useState<SacramentType>('baptism');
   const [isWizardOpen, setIsWizardOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [pastoralTab, setPastoralTab] = useState<'fieis' | 'pastorais'>('fieis');
 
   useEffect(() => {
     if (profile?.role && !allowedLevels.includes(currentLevel)) {
