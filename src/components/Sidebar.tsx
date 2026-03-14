@@ -58,6 +58,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onTabChange, userLe
     if (item.id === 'settings') return userLevel === 'super';
     // B9: Reports always visible for super and matriz
     if (item.id === 'reports') return userLevel === 'super' || userLevel === 'matriz' || (activeTenant?.active_modules?.includes(item.id) ?? false);
+    // Administratio visible for super and matriz admins
+    if (item.id === 'administratio') return userLevel === 'super' || userLevel === 'matriz';
     if (!activeTenant?.active_modules) return true;
     return activeTenant.active_modules.includes(item.id);
   });
