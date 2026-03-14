@@ -68,6 +68,7 @@ const getPageTitle = (level: Level, tab: string): string => {
     sacramenta: 'Sacramenta',
     missio: 'Missio',
     pastoralis: 'Pastoralis',
+    administratio: 'Administratio',
     reports: 'Relatórios',
     'global-map': 'Mapa Pastoral Global',
     users: 'Gestão de Usuários',
