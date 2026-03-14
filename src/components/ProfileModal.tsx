@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { X, Camera, Save, Lock } from 'lucide-react';
-import { supabase } from '../integrations/supabase/client';
+import { supabase } from '../services/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import toast from 'react-hot-toast';
 import './ProfileModal.css';
