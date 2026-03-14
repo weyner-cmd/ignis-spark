@@ -3,7 +3,7 @@ import {
   Wallet, Plus, Trash2, Edit2, DollarSign, Package,
   Search, X, Save
 } from 'lucide-react';
-import { supabase } from '../../integrations/supabase/client';
+import { supabase } from '../../services/supabase';
 import toast from 'react-hot-toast';
 import './Administratio.css';
 

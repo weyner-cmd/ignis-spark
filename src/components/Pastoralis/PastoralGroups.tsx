@@ -3,7 +3,7 @@ import {
   Users, Plus, Edit2, Trash2, Calendar, UserPlus,
   ChevronDown, ChevronUp, X, Save
 } from 'lucide-react';
-import { supabase } from '../../integrations/supabase/client';
+import { supabase } from '../../services/supabase';
 import toast from 'react-hot-toast';
 
 interface PastoralGroup {
