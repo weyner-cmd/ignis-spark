@@ -346,13 +346,13 @@ function App() {
             <Menu size={22} />
           </button>
           {isSidebarOpen && <div className="sidebar-overlay" onClick={() => setIsSidebarOpen(false)} />}
-          <Sidebar
-            activeTab={activeTab}
-            onTabChange={(id) => { setActiveTab(id); setIsSidebarOpen(false); }}
-            userLevel={profile?.role === 'super_admin' ? 'super' : currentLevel}
-            isOpen={isSidebarOpen}
-            onProfileClick={() => setIsProfileOpen(true)}
-          />
+            <Sidebar
+              activeTab={activeTab}
+              onTabChange={(id) => { navigateToTab(id); setIsSidebarOpen(false); }}
+              userLevel={profile?.role === 'super_admin' ? 'super' : currentLevel}
+              isOpen={isSidebarOpen}
+              onProfileClick={() => setIsProfileOpen(true)}
+            />
         </>
       )}
 
