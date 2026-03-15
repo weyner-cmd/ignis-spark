@@ -106,6 +106,13 @@ const getPageSubtitle = (level: Level, tab: string): string => {
   }
 };
 
+const getTabFromUrl = (): string => {
+  const pathTab = window.location.pathname.replace(/^\/+/, '');
+  if (pathTab) return pathTab;
+  const hashTab = window.location.hash.replace(/^#/, '');
+  return hashTab || 'home';
+};
+
 function App() {
   const { activeTenant, allTenants, switchTenant, isLoading: isTenantLoading } = useTenant();
   const { user, profile, isLoading: isAuthLoading, signOut } = useAuth();
