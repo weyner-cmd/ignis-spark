@@ -295,8 +295,12 @@ function App() {
                   {pastoralTab === 'fieis' ? <PeopleDirectory tenantId={activeTenant.id} /> : <PastoralGroups tenantId={activeTenant.id} />}
                 </div>
               )}
-              {activeTab === 'administratio' && activeTenant && (
-                <Administratio tenantId={activeTenant.id} />
+              {activeTab === 'administratio' && (
+                activeTenant ? (
+                  <Administratio tenantId={activeTenant.id} />
+                ) : (
+                  <div className="loading-state">Selecione uma paróquia para acessar o Administratio.</div>
+                )
               )}
               {activeTab === 'reports' && activeTenant && (
                 <ReportsPanel tenantId={activeTenant.id} />
