@@ -122,7 +122,7 @@ function App() {
   const defaultLevel = defaultLevelForRole[userRole] || 'fiel';
 
   const [currentLevel, setCurrentLevel] = useState<Level>(defaultLevel);
-  const [activeTab, setActiveTab] = useState<string>('home');
+  const [activeTab, setActiveTab] = useState<string>(() => getTabFromUrl());
   const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
   const [refreshTrigger] = useState(0);
   const [sacramentView, setSacramentView] = useState<SacramentType>('baptism');
@@ -130,6 +130,29 @@ function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [pastoralTab, setPastoralTab] = useState<'fieis' | 'pastorais'>('fieis');
+
+  const navigateToTab = useCallback((tabId: string) => {
+    const url = tabId === 'home' ? '/' : `/#${tabId}`;
+    window.history.pushState(null, '', url);
+    setActiveTab(tabId);
+  }, []);
+
+  useEffect(() => {
+    const apply = () => setActiveTab(getTabFromUrl());
+
+    const pathTab = window.location.pathname.replace(/^\/+/, '');
+    if (pathTab) {
+      window.history.replaceState(null, '', `/#${pathTab}`);
+    }
+
+    apply();
+    window.addEventListener('hashchange', apply);
+    window.addEventListener('popstate', apply);
+    return () => {
+      window.removeEventListener('hashchange', apply);
+      window.removeEventListener('popstate', apply);
+    };
+  }, []);
 
   useEffect(() => {
     if (profile?.role && !allowedLevels.includes(currentLevel)) {
