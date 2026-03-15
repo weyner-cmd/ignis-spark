@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Menu } from 'lucide-react';
 import { Sidebar } from './components/Sidebar';
 import { ParishesTable } from './components/ParishesTable';
@@ -106,6 +106,13 @@ const getPageSubtitle = (level: Level, tab: string): string => {
   }
 };
 
+const getTabFromUrl = (): string => {
+  const pathTab = window.location.pathname.replace(/^\/+/, '');
+  if (pathTab) return pathTab;
+  const hashTab = window.location.hash.replace(/^#/, '');
+  return hashTab || 'home';
+};
+
 function App() {
   const { activeTenant, allTenants, switchTenant, isLoading: isTenantLoading } = useTenant();
   const { user, profile, isLoading: isAuthLoading, signOut } = useAuth();
@@ -115,7 +122,7 @@ function App() {
   const defaultLevel = defaultLevelForRole[userRole] || 'fiel';
 
   const [currentLevel, setCurrentLevel] = useState<Level>(defaultLevel);
-  const [activeTab, setActiveTab] = useState<string>('home');
+  const [activeTab, setActiveTab] = useState<string>(() => getTabFromUrl());
   const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
   const [refreshTrigger] = useState(0);
   const [sacramentView, setSacramentView] = useState<SacramentType>('baptism');
@@ -123,6 +130,29 @@ function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [pastoralTab, setPastoralTab] = useState<'fieis' | 'pastorais'>('fieis');
+
+  const navigateToTab = useCallback((tabId: string) => {
+    const url = tabId === 'home' ? '/' : `/#${tabId}`;
+    window.history.pushState(null, '', url);
+    setActiveTab(tabId);
+  }, []);
+
+  useEffect(() => {
+    const apply = () => setActiveTab(getTabFromUrl());
+
+    const pathTab = window.location.pathname.replace(/^\/+/, '');
+    if (pathTab) {
+      window.history.replaceState(null, '', `/#${pathTab}`);
+    }
+
+    apply();
+    window.addEventListener('hashchange', apply);
+    window.addEventListener('popstate', apply);
+    return () => {
+      window.removeEventListener('hashchange', apply);
+      window.removeEventListener('popstate', apply);
+    };
+  }, []);
 
   useEffect(() => {
     if (profile?.role && !allowedLevels.includes(currentLevel)) {
@@ -195,8 +225,12 @@ function App() {
                   {pastoralTab === 'fieis' ? <PeopleDirectory tenantId={activeTenant.id} /> : <PastoralGroups tenantId={activeTenant.id} />}
                 </div>
               )}
-              {activeTab === 'administratio' && activeTenant && (
-                <Administratio tenantId={activeTenant.id} />
+              {activeTab === 'administratio' && (
+                activeTenant ? (
+                  <Administratio tenantId={activeTenant.id} />
+                ) : (
+                  <div className="loading-state">Selecione uma paróquia para acessar o Administratio.</div>
+                )
               )}
               {activeTab === 'reports' && activeTenant && (
                 <ReportsPanel tenantId={activeTenant.id} />
@@ -261,8 +295,12 @@ function App() {
                   {pastoralTab === 'fieis' ? <PeopleDirectory tenantId={activeTenant.id} /> : <PastoralGroups tenantId={activeTenant.id} />}
                 </div>
               )}
-              {activeTab === 'administratio' && activeTenant && (
-                <Administratio tenantId={activeTenant.id} />
+              {activeTab === 'administratio' && (
+                activeTenant ? (
+                  <Administratio tenantId={activeTenant.id} />
+                ) : (
+                  <div className="loading-state">Selecione uma paróquia para acessar o Administratio.</div>
+                )
               )}
               {activeTab === 'reports' && activeTenant && (
                 <ReportsPanel tenantId={activeTenant.id} />
@@ -316,13 +354,13 @@ function App() {
             <Menu size={22} />
           </button>
           {isSidebarOpen && <div className="sidebar-overlay" onClick={() => setIsSidebarOpen(false)} />}
-          <Sidebar
-            activeTab={activeTab}
-            onTabChange={(id) => { setActiveTab(id); setIsSidebarOpen(false); }}
-            userLevel={profile?.role === 'super_admin' ? 'super' : currentLevel}
-            isOpen={isSidebarOpen}
-            onProfileClick={() => setIsProfileOpen(true)}
-          />
+            <Sidebar
+              activeTab={activeTab}
+              onTabChange={(id) => { navigateToTab(id); setIsSidebarOpen(false); }}
+              userLevel={profile?.role === 'super_admin' ? 'super' : currentLevel}
+              isOpen={isSidebarOpen}
+              onProfileClick={() => setIsProfileOpen(true)}
+            />
         </>
       )}
 
@@ -393,7 +431,7 @@ function App() {
 
           <div className="header-bottom">
             <div>
-              <Breadcrumbs level={currentLevel} activeTab={activeTab} onNavigate={setActiveTab} />
+              <Breadcrumbs level={currentLevel} activeTab={activeTab} onNavigate={navigateToTab} />
               <h1 className="page-title">{getPageTitle(currentLevel, activeTab)}</h1>
               <p className="page-subtitle">{getPageSubtitle(currentLevel, activeTab)}</p>
             </div>
