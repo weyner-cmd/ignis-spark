@@ -423,7 +423,7 @@ function App() {
 
           <div className="header-bottom">
             <div>
-              <Breadcrumbs level={currentLevel} activeTab={activeTab} onNavigate={setActiveTab} />
+              <Breadcrumbs level={currentLevel} activeTab={activeTab} onNavigate={navigateToTab} />
               <h1 className="page-title">{getPageTitle(currentLevel, activeTab)}</h1>
               <p className="page-subtitle">{getPageSubtitle(currentLevel, activeTab)}</p>
             </div>
