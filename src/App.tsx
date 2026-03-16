@@ -163,6 +163,19 @@ function App() {
     }
   }, [profile?.role]);
 
+  useEffect(() => {
+    if (!isAuthLoading && !isTenantLoading) {
+      setIsStartupStalled(false);
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      setIsStartupStalled(true);
+    }, 12000);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [isAuthLoading, isTenantLoading]);
+
   const { kpis: dynamicKpis } = useDashboardKPIs({
     level: currentLevel,
     tenantId: activeTenant?.id,
