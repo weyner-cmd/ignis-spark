@@ -349,6 +349,17 @@ function App() {
   };
 
   if (isAuthLoading || isTenantLoading) {
+    if (isStartupStalled) {
+      return (
+        <div className="loading-state" style={{ flexDirection: 'column', gap: '12px' }}>
+          <span>Erro de carregamento. Tente recarregar a página.</span>
+          <button className="btn-primary" onClick={() => window.location.reload()}>
+            Recarregar
+          </button>
+        </div>
+      );
+    }
+
     return <div className="loading-state">Iniciando IGNIS...</div>;
   }
 
