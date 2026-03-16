@@ -130,6 +130,7 @@ function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [pastoralTab, setPastoralTab] = useState<'fieis' | 'pastorais'>('fieis');
+  const [isStartupStalled, setIsStartupStalled] = useState(false);
 
   const navigateToTab = useCallback((tabId: string) => {
     const url = tabId === 'home' ? '/' : `/#${tabId}`;
@@ -161,6 +162,19 @@ function App() {
       setCurrentLevel(defaultLevel);
     }
   }, [profile?.role]);
+
+  useEffect(() => {
+    if (!isAuthLoading && !isTenantLoading) {
+      setIsStartupStalled(false);
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      setIsStartupStalled(true);
+    }, 12000);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [isAuthLoading, isTenantLoading]);
 
   const { kpis: dynamicKpis } = useDashboardKPIs({
     level: currentLevel,
@@ -335,6 +349,17 @@ function App() {
   };
 
   if (isAuthLoading || isTenantLoading) {
+    if (isStartupStalled) {
+      return (
+        <div className="loading-state" style={{ flexDirection: 'column', gap: '12px' }}>
+          <span>Erro de carregamento. Tente recarregar a página.</span>
+          <button className="btn-primary" onClick={() => window.location.reload()}>
+            Recarregar
+          </button>
+        </div>
+      );
+    }
+
     return <div className="loading-state">Iniciando IGNIS...</div>;
   }
 
