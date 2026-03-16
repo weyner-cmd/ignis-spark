@@ -130,6 +130,7 @@ function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [pastoralTab, setPastoralTab] = useState<'fieis' | 'pastorais'>('fieis');
+  const [isStartupStalled, setIsStartupStalled] = useState(false);
 
   const navigateToTab = useCallback((tabId: string) => {
     const url = tabId === 'home' ? '/' : `/#${tabId}`;
