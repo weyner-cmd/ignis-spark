@@ -49,40 +49,66 @@ export const TenantProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     const [isLoading, setIsLoading] = useState(true);
 
     const loadSubTenant = async (tenantId: string) => {
-        const { data: subData } = await supabase
-            .from('sub_tenants')
-            .select('*')
-            .eq('tenant_id', tenantId)
-            .limit(1);
+        try {
+            const { data: subData, error } = await supabase
+                .from('sub_tenants')
+                .select('*')
+                .eq('tenant_id', tenantId)
+                .limit(1);
 
-        if (subData && subData.length > 0) {
-            const s = subData[0];
-            setActiveSubTenant({
-                id: s.id,
-                tenantId: s.tenant_id,
-                name: s.name,
-                status: 'active',
-                address: s.address || ''
-            });
-        } else {
+            if (error) {
+                console.error('Error fetching sub-tenant:', error);
+                setActiveSubTenant(null);
+                return;
+            }
+
+            if (subData && subData.length > 0) {
+                const s = subData[0];
+                setActiveSubTenant({
+                    id: s.id,
+                    tenantId: s.tenant_id,
+                    name: s.name,
+                    status: 'active',
+                    address: s.address || ''
+                });
+            } else {
+                setActiveSubTenant(null);
+            }
+        } catch (error) {
+            console.error('Unexpected error loading sub-tenant:', error);
             setActiveSubTenant(null);
         }
     };
 
     useEffect(() => {
-        if (authLoading) return;
+        let isMounted = true;
+        const safeSetLoading = (value: boolean) => {
+            if (isMounted) setIsLoading(value);
+        };
+
+        if (authLoading) {
+            return () => {
+                isMounted = false;
+            };
+        }
 
         if (!session) {
             setActiveTenant(null);
             setActiveSubTenant(null);
             setAllTenants([]);
-            setIsLoading(false);
-            return;
+            safeSetLoading(false);
+            return () => {
+                isMounted = false;
+            };
         }
+
+        const loadingTimeout = window.setTimeout(() => {
+            console.warn('TenantProvider: bootstrap timeout, forcing loading=false');
+            safeSetLoading(false);
+        }, 10000);
 
         const initTenant = async () => {
             try {
-                // Load all active tenants
                 const { data: tenantsData, error } = await supabase
                     .from('tenants')
                     .select('*')
@@ -93,16 +119,16 @@ export const TenantProvider: React.FC<{ children: React.ReactNode }> = ({ childr
                     console.error('Error fetching tenants:', error);
                     if (error.code === 'PGRST301' || error.message?.includes('JWT')) {
                         await supabase.auth.signOut();
-                        setIsLoading(false);
                         return;
                     }
                 }
+
+                if (!isMounted) return;
 
                 const tenants = (tenantsData || []) as Tenant[];
                 setAllTenants(tenants);
 
                 if (tenants.length > 0) {
-                    // Check localStorage for saved selection
                     const savedId = localStorage.getItem(STORAGE_KEY);
                     const savedTenant = savedId ? tenants.find(t => t.id === savedId) : null;
                     const selected = savedTenant || tenants[0];
@@ -110,14 +136,24 @@ export const TenantProvider: React.FC<{ children: React.ReactNode }> = ({ childr
                     setActiveTenant(selected);
                     localStorage.setItem(STORAGE_KEY, selected.id);
                     await loadSubTenant(selected.id);
+                } else {
+                    setActiveTenant(null);
+                    setActiveSubTenant(null);
                 }
             } catch (err) {
                 console.error('Unexpected error loading tenant:', err);
             } finally {
-                setIsLoading(false);
+                window.clearTimeout(loadingTimeout);
+                safeSetLoading(false);
             }
         };
-        initTenant();
+
+        void initTenant();
+
+        return () => {
+            isMounted = false;
+            window.clearTimeout(loadingTimeout);
+        };
     }, [session, authLoading]);
 
     const switchTenant = (tenantId: string) => {
