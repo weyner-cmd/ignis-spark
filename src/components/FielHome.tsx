@@ -1,21 +1,18 @@
 import { useState, useEffect } from 'react';
-import { Flame, Calendar, Award, MapPin, Plus, Clock, ChevronRight } from 'lucide-react';
+import { Award, Calendar, Clock, ChevronLeft, ChevronRight, Plus, LogOut, Flame } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useTenant } from '../contexts/TenantContext';
 import { ignisApi } from '../services/api';
 import { AppointmentWizard } from './AppointmentWizard';
 import type { Appointment, Sacrament } from '../services/api';
-import { format, startOfDay, addDays } from 'date-fns';
+import { format, startOfDay, addDays, startOfMonth, endOfMonth, eachDayOfInterval, getDay, addMonths, subMonths, isSameMonth, isSameDay, isToday } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import toast from 'react-hot-toast';
 import './FielHome.css';
 
-const SERVICE_ACTIONS = [
-  { label: 'Confissão', icon: Award, type: 'sacra', serviceType: 'Confissão' },
-  { label: 'Direção Espiritual', icon: Calendar, type: 'sacra', serviceType: 'Direção Espiritual' },
-  { label: 'Visita Enfermos', icon: MapPin, type: 'missio', serviceType: 'Visita aos Enfermos' },
-  { label: 'Benção Casa/Comércio', icon: Flame, type: 'missio', serviceType: 'Benção de Casas/Comércio' },
-] as const;
+interface FielHomeProps {
+  onProfileClick?: () => void;
+}
 
 const SACRAMENT_LABELS: Record<string, string> = {
   baptism: 'Batismo',
@@ -26,53 +23,60 @@ const SACRAMENT_LABELS: Record<string, string> = {
 };
 
 const SACRAMENT_ORDER = ['baptism', 'first_communion', 'confirmation', 'marriage', 'anointing_of_sick'];
+const WEEKDAYS = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 
-export const FielHome: React.FC = () => {
-  const { user, profile } = useAuth();
+export const FielHome: React.FC<FielHomeProps> = ({ onProfileClick }) => {
+  const { user, profile, signOut } = useAuth();
   const { activeTenant } = useTenant();
-  const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [availableSlots, setAvailableSlots] = useState<{ time: string; hour: number; minute: number }[]>([]);
+  const [loadingSlots, setLoadingSlots] = useState(false);
+  const [myAppointments, setMyAppointments] = useState<Appointment[]>([]);
   const [sacraments, setSacraments] = useState<Sacrament[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isWizardOpen, setIsWizardOpen] = useState(false);
-  const [, setWizardService] = useState('');
+  const [daysWithSlots, setDaysWithSlots] = useState<Set<string>>(new Set());
 
   const userName = profile?.full_name || user?.email?.split('@')[0] || 'Fiel';
   const firstName = userName.split(' ')[0];
   const initials = userName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
   const parishName = activeTenant?.name || 'Paróquia';
+  const displayAvatar = (profile as any)?.avatar_url || null;
 
   useEffect(() => {
     if (!activeTenant?.id) return;
-    loadData();
+    loadMyData();
   }, [activeTenant?.id]);
 
-  const loadData = async () => {
+  // Load days with available slots for the current month
+  useEffect(() => {
+    if (!activeTenant?.id) return;
+    loadMonthAvailability();
+  }, [activeTenant?.id, currentMonth]);
+
+  const loadMyData = async () => {
     if (!activeTenant?.id) return;
     setIsLoading(true);
     try {
-      // Load upcoming appointments (next 30 days)
       const now = startOfDay(new Date());
       const future = addDays(now, 30);
-
-      // We need a sub_tenant_id — get first community
       const communities = await ignisApi.communities.getByTenant(activeTenant.id);
-      if (communities.length > 0) {
-        const allAppointments: Appointment[] = [];
-        for (const c of communities) {
-          const appts = await ignisApi.appointments.getByDateRange(activeTenant.id, c.id, now, future);
-          allAppointments.push(...appts);
-        }
-        // Filter only user's appointments (by name match)
-        const myAppts = allAppointments
-          .filter(a => a.status !== 'cancelled')
-          .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime())
-          .slice(0, 5);
-        setAppointments(myAppts);
+
+      // Load my upcoming appointments
+      const allAppointments: Appointment[] = [];
+      for (const c of communities) {
+        const appts = await ignisApi.appointments.getByDateRange(activeTenant.id, c.id, now, future);
+        allAppointments.push(...appts);
       }
+      const myAppts = allAppointments
+        .filter(a => a.status !== 'cancelled')
+        .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime())
+        .slice(0, 5);
+      setMyAppointments(myAppts);
 
       // Load sacraments
       const allSacraments = await ignisApi.sacraments.getAll(activeTenant.id);
-      // Filter by user name match (since we may not have person_id linked)
       const mySacraments = allSacraments.filter(s =>
         s.subjectName?.toLowerCase().includes(firstName.toLowerCase())
       );
@@ -84,17 +88,54 @@ export const FielHome: React.FC = () => {
     }
   };
 
-  const handleQuickAction = (serviceType: string) => {
-    setWizardService(serviceType);
+  const loadMonthAvailability = async () => {
+    if (!activeTenant?.id) return;
+    try {
+      const monthStart = startOfMonth(currentMonth);
+      const monthEnd = endOfMonth(currentMonth);
+      const today = startOfDay(new Date());
+      const days = eachDayOfInterval({ start: monthStart, end: monthEnd });
+      const available = new Set<string>();
+
+      // Check a few days ahead to show availability (sample: check each day)
+      for (const day of days) {
+        if (day < today) continue;
+        const slots = await ignisApi.appointments.getAvailableSlots(activeTenant.id, day);
+        if (slots.length > 0) {
+          available.add(format(day, 'yyyy-MM-dd'));
+        }
+      }
+      setDaysWithSlots(available);
+    } catch (error) {
+      console.error('Error loading month availability', error);
+    }
+  };
+
+  const handleDayClick = async (day: Date) => {
+    if (day < startOfDay(new Date())) return;
+    setSelectedDate(day);
+    setLoadingSlots(true);
+    try {
+      const slots = await ignisApi.appointments.getAvailableSlots(activeTenant!.id, day);
+      setAvailableSlots(slots);
+    } catch (error) {
+      console.error('Error loading slots', error);
+      setAvailableSlots([]);
+    } finally {
+      setLoadingSlots(false);
+    }
+  };
+
+  const handleSlotClick = (_slot: { time: string; hour: number; minute: number }) => {
     setIsWizardOpen(true);
   };
 
-  const handlePrayRequest = () => {
-    toast('🙏 Funcionalidade de pedidos de oração em breve!', { icon: '🕊️' });
-  };
-
+  // Calendar rendering
+  const monthStart = startOfMonth(currentMonth);
+  const monthEnd = endOfMonth(currentMonth);
+  const calendarDays = eachDayOfInterval({ start: monthStart, end: monthEnd });
+  const startDayOfWeek = getDay(monthStart);
   const completedSacraments = sacraments.map(s => s.type);
-
   const journeyItems = SACRAMENT_ORDER.map(type => ({
     type,
     label: SACRAMENT_LABELS[type] || type,
@@ -106,54 +147,109 @@ export const FielHome: React.FC = () => {
       {/* Header */}
       <header className="fiel-header glass" role="banner">
         <div className="fiel-user">
-          <div className="fiel-avatar" aria-hidden="true">{initials}</div>
+          <button className="fiel-avatar-btn" onClick={onProfileClick} aria-label="Editar perfil">
+            {displayAvatar ? (
+              <img src={displayAvatar} alt="Avatar" className="fiel-avatar-img" />
+            ) : (
+              <div className="fiel-avatar" aria-hidden="true">{initials}</div>
+            )}
+          </button>
           <div>
             <h2 className="fiel-greeting">Salve Maria, {firstName}!</h2>
             <p className="fiel-subtitle">{parishName}</p>
           </div>
         </div>
-        <button className="notif-btn" aria-label="Ver calendário">
-          <Calendar size={20} />
+        <button className="notif-btn logout-btn" onClick={() => signOut()} aria-label="Sair">
+          <LogOut size={20} />
         </button>
       </header>
 
-      {/* Quick Actions */}
-      <nav className="fiel-quick-actions" aria-label="Ações rápidas">
-        {SERVICE_ACTIONS.map((action) => (
-          <button
-            key={action.serviceType}
-            className={`action-card ${action.type}`}
-            onClick={() => handleQuickAction(action.serviceType)}
-            aria-label={`Agendar ${action.label}`}
-          >
-            <div className="action-icon">
-              <action.icon size={24} />
-            </div>
-            <span>{action.label}</span>
+      {/* Monthly Calendar */}
+      <section className="fiel-section" aria-label="Calendário">
+        <div className="fiel-calendar-header">
+          <button className="cal-nav-btn" onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}>
+            <ChevronLeft size={20} />
           </button>
-        ))}
-      </nav>
-
-      {/* Próximos Eventos */}
-      <section className="fiel-section" aria-label="Próximos eventos">
-        <div className="section-title-row">
-          <h3>Próximos Eventos</h3>
-          {appointments.length > 3 && (
-            <button className="btn-link">Ver todos <ChevronRight size={14} /></button>
-          )}
+          <h3 className="cal-month-label">
+            {format(currentMonth, 'MMMM yyyy', { locale: ptBR })}
+          </h3>
+          <button className="cal-nav-btn" onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}>
+            <ChevronRight size={20} />
+          </button>
         </div>
 
+        <div className="fiel-calendar-grid">
+          {WEEKDAYS.map(d => (
+            <div key={d} className="cal-weekday">{d}</div>
+          ))}
+          {Array.from({ length: startDayOfWeek }).map((_, i) => (
+            <div key={`empty-${i}`} className="cal-day empty" />
+          ))}
+          {calendarDays.map(day => {
+            const dateKey = format(day, 'yyyy-MM-dd');
+            const hasSlots = daysWithSlots.has(dateKey);
+            const isPast = day < startOfDay(new Date());
+            const isSelected = selectedDate && isSameDay(day, selectedDate);
+            return (
+              <button
+                key={dateKey}
+                className={`cal-day${isToday(day) ? ' today' : ''}${isSelected ? ' selected' : ''}${hasSlots ? ' has-slots' : ''}${isPast ? ' past' : ''}`}
+                onClick={() => !isPast && handleDayClick(day)}
+                disabled={isPast}
+              >
+                <span className="cal-day-number">{format(day, 'd')}</span>
+                {hasSlots && <span className="cal-dot" />}
+              </button>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* Available Slots for selected day */}
+      {selectedDate && (
+        <section className="fiel-section" aria-label="Horários disponíveis">
+          <h3>Horários em {format(selectedDate, "dd 'de' MMMM", { locale: ptBR })}</h3>
+          {loadingSlots ? (
+            <div className="slots-loading">
+              <Clock size={16} /> Carregando horários...
+            </div>
+          ) : availableSlots.length === 0 ? (
+            <div className="slots-empty glass">
+              <Calendar size={20} />
+              <p>Nenhum horário disponível neste dia.</p>
+            </div>
+          ) : (
+            <div className="slots-grid">
+              {availableSlots.map(slot => (
+                <button
+                  key={slot.time}
+                  className="slot-btn glass"
+                  onClick={() => handleSlotClick(slot)}
+                >
+                  <Clock size={14} />
+                  <span>{slot.time}</span>
+                  <Plus size={14} className="slot-plus" />
+                </button>
+              ))}
+            </div>
+          )}
+        </section>
+      )}
+
+      {/* My Appointments */}
+      <section className="fiel-section" aria-label="Meus agendamentos">
+        <h3>Meus Agendamentos</h3>
         {isLoading ? (
           <div className="event-card glass">
             <div className="skeleton skeleton-text" style={{ width: '100%', height: 60 }} />
           </div>
-        ) : appointments.length === 0 ? (
+        ) : myAppointments.length === 0 ? (
           <div className="event-card glass empty-state">
             <Clock size={20} />
-            <p>Nenhum evento próximo. Agende pelo menu acima!</p>
+            <p>Nenhum agendamento. Selecione um dia no calendário!</p>
           </div>
         ) : (
-          appointments.slice(0, 3).map((appt) => {
+          myAppointments.slice(0, 5).map((appt) => {
             const date = new Date(appt.startTime);
             return (
               <div key={appt.id} className="event-card glass">
@@ -178,7 +274,7 @@ export const FielHome: React.FC = () => {
         )}
       </section>
 
-      {/* Jornada de Fé */}
+      {/* Faith Journey */}
       <section className="fiel-section" aria-label="Jornada sacramental">
         <h3>Minha Jornada de Fé</h3>
         <div className="journey-grid">
@@ -206,12 +302,6 @@ export const FielHome: React.FC = () => {
         </div>
       </section>
 
-      {/* CTA */}
-      <button className="btn-pray-now" onClick={handlePrayRequest}>
-        <Flame size={20} />
-        <span>Pedir Oração Agora</span>
-      </button>
-
       {/* Wizard */}
       <AppointmentWizard
         isOpen={isWizardOpen}
@@ -219,7 +309,8 @@ export const FielHome: React.FC = () => {
         tenantId={activeTenant?.id}
         onSuccess={() => {
           toast.success('Agendamento criado com sucesso!');
-          loadData();
+          loadMyData();
+          if (selectedDate) handleDayClick(selectedDate);
         }}
       />
     </div>

@@ -314,6 +314,51 @@ export const ignisApi = {
                 .delete()
                 .eq('id', id);
             if (error) throw error;
+        },
+        getAvailableSlots: async (tenantId: string, date: Date) => {
+            const { startOfDay, endOfDay } = await import('date-fns');
+            const dayStart = startOfDay(date);
+            const dayEnd = endOfDay(date);
+
+            // Get all communities for this tenant
+            const communities = await ignisApi.communities.getByTenant(tenantId);
+
+            // Fetch all appointments across all communities for the day
+            const allAppointments: Appointment[] = [];
+            for (const c of communities) {
+                const appts = await ignisApi.appointments.getByDateRange(tenantId, c.id, dayStart, dayEnd);
+                allAppointments.push(...appts);
+            }
+
+            // Filter out cancelled appointments
+            const activeAppts = allAppointments.filter(a => a.status !== 'cancelled');
+
+            // Generate 30-min slots from 6:00 to 20:00
+            const slots: { time: string; hour: number; minute: number }[] = [];
+            for (let h = 6; h < 20; h++) {
+                for (const m of [0, 30]) {
+                    const slotStart = new Date(date);
+                    slotStart.setHours(h, m, 0, 0);
+                    const slotEnd = new Date(date);
+                    slotEnd.setHours(h, m + 30, 0, 0);
+
+                    // Check if this slot overlaps with any existing appointment
+                    const isOccupied = activeAppts.some(a => {
+                        const aStart = new Date(a.startTime).getTime();
+                        const aEnd = new Date(a.endTime).getTime();
+                        return slotStart.getTime() < aEnd && slotEnd.getTime() > aStart;
+                    });
+
+                    if (!isOccupied) {
+                        slots.push({
+                            time: `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`,
+                            hour: h,
+                            minute: m,
+                        });
+                    }
+                }
+            }
+            return slots;
         }
     },
     sacraments: {

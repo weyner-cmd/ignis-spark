@@ -134,6 +134,16 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) =
           </div>
 
           <div className="form-group">
+            <label>Telefone / WhatsApp</label>
+            <input className="input-text" value={phone} onChange={e => setPhone(e.target.value)} placeholder="(00) 00000-0000" />
+          </div>
+
+          <div className="form-group">
+            <label>Endereço</label>
+            <input className="input-text" value={address} onChange={e => setAddress(e.target.value)} placeholder="Rua, número, bairro..." />
+          </div>
+
+          <div className="form-group">
             <label>Função</label>
             <input className="input-text" value={
               profile?.role === 'super_admin' ? 'Super Admin'

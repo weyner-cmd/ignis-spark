@@ -344,7 +344,7 @@ function App() {
           </>
         );
       case 'fiel':
-        return <FielHome />;
+        return <FielHome onProfileClick={() => setIsProfileOpen(true)} />;
     }
   };
 
