@@ -1,7 +1,8 @@
-import React, { useState, useRef } from 'react';
-import { X, Camera, Save, Lock } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { X, Camera, Save, Lock, Users } from 'lucide-react';
 import { supabase } from '../services/supabase';
 import { useAuth } from '../contexts/AuthContext';
+import { useTenant } from '../contexts/TenantContext';
 import toast from 'react-hot-toast';
 import './ProfileModal.css';
 
