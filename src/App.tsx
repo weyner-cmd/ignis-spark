@@ -31,7 +31,6 @@ import {
   ShieldCheck,
   Landmark,
   Home,
-  Heart,
   ChevronDown
 } from 'lucide-react';
 import { useTenant } from './contexts/TenantContext';
@@ -344,7 +343,7 @@ function App() {
           </>
         );
       case 'fiel':
-        return <FielHome />;
+        return <FielHome onProfileClick={() => setIsProfileOpen(true)} />;
     }
   };
 
@@ -369,7 +368,7 @@ function App() {
 
   return (
     <div className={`app-container level-${currentLevel}`}>
-      {user && (
+      {user && currentLevel !== 'fiel' && (
         <>
           <button
             className="mobile-menu-btn"
@@ -390,6 +389,7 @@ function App() {
       )}
 
       <main className="main-content">
+        {currentLevel !== 'fiel' && (
         <header className="main-header">
           <div className="header-top">
             <div className="header-left">
@@ -421,12 +421,10 @@ function App() {
                   {currentLevel === 'super' && <ShieldCheck size={14} />}
                   {currentLevel === 'matriz' && <Landmark size={14} />}
                   {currentLevel === 'comunidade' && <Home size={14} />}
-                  {currentLevel === 'fiel' && <Heart size={14} />}
                   <span>
                     {currentLevel === 'super' && 'Super Admin'}
                     {currentLevel === 'matriz' && 'Nível 1: Matriz'}
                     {currentLevel === 'comunidade' && 'Nível 2: Comunidade'}
-                    {currentLevel === 'fiel' && 'Nível 3: O Fiel'}
                   </span>
                 </div>
 
@@ -469,6 +467,7 @@ function App() {
             )}
           </div>
         </header>
+        )}
 
         {renderDashboard()}
 

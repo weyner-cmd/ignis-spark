@@ -15,6 +15,8 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) =
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [fullName, setFullName] = useState(profile?.full_name || '');
+  const [phone, setPhone] = useState((profile as any)?.phone || '');
+  const [address, setAddress] = useState((profile as any)?.address || '');
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [_currentPassword, _setCurrentPassword] = useState('');
@@ -58,6 +60,8 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) =
       const updatePayload: Record<string, string> = {};
       if (fullName !== profile?.full_name) updatePayload.full_name = fullName;
       if (avatarUrl) updatePayload.avatar_url = avatarUrl;
+      if (phone !== ((profile as any)?.phone || '')) updatePayload.phone = phone;
+      if (address !== ((profile as any)?.address || '')) updatePayload.address = address;
 
       if (Object.keys(updatePayload).length > 0) {
         const { error } = await supabase.from('profiles').update(updatePayload).eq('id', user.id);
@@ -127,6 +131,16 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) =
           <div className="form-group">
             <label>E-mail</label>
             <input className="input-text" value={user.email || ''} disabled />
+          </div>
+
+          <div className="form-group">
+            <label>Telefone / WhatsApp</label>
+            <input className="input-text" value={phone} onChange={e => setPhone(e.target.value)} placeholder="(00) 00000-0000" />
+          </div>
+
+          <div className="form-group">
+            <label>Endereço</label>
+            <input className="input-text" value={address} onChange={e => setAddress(e.target.value)} placeholder="Rua, número, bairro..." />
           </div>
 
           <div className="form-group">
