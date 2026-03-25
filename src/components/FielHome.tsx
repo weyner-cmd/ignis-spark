@@ -237,6 +237,9 @@ export const FielHome: React.FC<FielHomeProps> = ({ onProfileClick }) => {
         </section>
       )}
 
+      {/* Minhas Pastorais */}
+      <FielPastorais />
+
       {/* My Appointments */}
       <section className="fiel-section" aria-label="Meus agendamentos">
         <h3>Meus Agendamentos</h3>
