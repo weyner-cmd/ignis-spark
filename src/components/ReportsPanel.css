@@ -165,8 +165,8 @@
 }
 
 .filter-group select option {
-    background: #1a1a2e;
-    color: white;
+    background: var(--surface);
+    color: var(--text-primary);
 }
 
 .search-filter {

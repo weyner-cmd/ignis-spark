@@ -127,7 +127,7 @@ a {
 
 /* Dark theme override for glass to keep the semi-transparent look */
 :root .glass {
-  background: rgba(34, 34, 42, 0.75);
+  background: rgba(30, 30, 40, 0.8);
 }
 
 [data-theme="light"] .glass {
