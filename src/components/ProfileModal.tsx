@@ -13,6 +13,7 @@ interface ProfileModalProps {
 
 export const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
   const { user, profile } = useAuth();
+  const { activeTenant } = useTenant();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [fullName, setFullName] = useState(profile?.full_name || '');
@@ -25,6 +26,41 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) =
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isSaving, setIsSaving] = useState(false);
   const [showPasswordSection, setShowPasswordSection] = useState(false);
+
+  // Pastoral membership
+  const [allGroups, setAllGroups] = useState<{ id: string; name: string }[]>([]);
+  const [myGroupIds, setMyGroupIds] = useState<Set<string>>(new Set());
+  const [originalGroupIds, setOriginalGroupIds] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    if (!isOpen || !activeTenant?.id || !user?.id) return;
+    loadPastoralData();
+  }, [isOpen, activeTenant?.id, user?.id]);
+
+  const loadPastoralData = async () => {
+    if (!activeTenant?.id || !user?.id) return;
+    try {
+      const [groupsRes, membershipsRes] = await Promise.all([
+        supabase.from('pastoral_groups').select('id, name').eq('tenant_id', activeTenant.id).eq('status', 'active').order('name'),
+        supabase.from('pastoral_members').select('group_id, role').eq('tenant_id', activeTenant.id).eq('person_id', user.id),
+      ]);
+      setAllGroups(groupsRes.data || []);
+      const ids = new Set((membershipsRes.data || []).map(m => m.group_id));
+      setMyGroupIds(ids);
+      setOriginalGroupIds(new Set(ids));
+    } catch (err) {
+      console.error('Error loading pastoral data:', err);
+    }
+  };
+
+  const toggleGroup = (groupId: string) => {
+    setMyGroupIds(prev => {
+      const next = new Set(prev);
+      if (next.has(groupId)) next.delete(groupId);
+      else next.add(groupId);
+      return next;
+    });
+  };
 
   if (!isOpen || !user) return null;
 
