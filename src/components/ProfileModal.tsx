@@ -60,6 +60,8 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) =
       const updatePayload: Record<string, string> = {};
       if (fullName !== profile?.full_name) updatePayload.full_name = fullName;
       if (avatarUrl) updatePayload.avatar_url = avatarUrl;
+      if (phone !== ((profile as any)?.phone || '')) updatePayload.phone = phone;
+      if (address !== ((profile as any)?.address || '')) updatePayload.address = address;
 
       if (Object.keys(updatePayload).length > 0) {
         const { error } = await supabase.from('profiles').update(updatePayload).eq('id', user.id);
