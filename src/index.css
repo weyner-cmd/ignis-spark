@@ -50,13 +50,13 @@
   --accent: #b8912e;
   --accent-color: #b8912e;
   --success: #2d7a50;
-  --background: #f4f4f8;
+  --background: #f0f0f5;
   --surface: #ffffff;
-  --surface-2: #eeeef2;
-  --surface-hover: #e8e8f0;
-  --border: #d0d0dc;
-  --text-primary: #1a1a2e;
-  --text-secondary: #5a5a72;
+  --surface-2: #e8e8ee;
+  --surface-hover: #dddde6;
+  --border: #c0c0d0;
+  --text-primary: #12122a;
+  --text-secondary: #48486a;
 
   --status-confirmed: #27ae60;
   --status-pending: #e08e0b;
