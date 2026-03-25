@@ -5,7 +5,7 @@ import { useTenant } from '../contexts/TenantContext';
 import { ignisApi } from '../services/api';
 import { AppointmentWizard } from './AppointmentWizard';
 import type { Appointment, Sacrament } from '../services/api';
-import { format, startOfDay, addDays, startOfMonth, endOfMonth, eachDayOfInterval, getDay, addMonths, subMonths, isSameMonth, isSameDay, isToday } from 'date-fns';
+import { format, startOfDay, addDays, startOfMonth, endOfMonth, eachDayOfInterval, getDay, addMonths, subMonths, isSameDay, isToday } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import toast from 'react-hot-toast';
 import './FielHome.css';

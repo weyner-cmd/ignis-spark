@@ -31,7 +31,7 @@ import {
   ShieldCheck,
   Landmark,
   Home,
-  Heart,
+  Home,
   ChevronDown
 } from 'lucide-react';
 import { useTenant } from './contexts/TenantContext';
