@@ -15,6 +15,8 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) =
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [fullName, setFullName] = useState(profile?.full_name || '');
+  const [phone, setPhone] = useState((profile as any)?.phone || '');
+  const [address, setAddress] = useState((profile as any)?.address || '');
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [_currentPassword, _setCurrentPassword] = useState('');
