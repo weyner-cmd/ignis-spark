@@ -1,60 +1,79 @@
 
 
-## Plano: Visão do Fiel — Agendamento por Disponibilidade + Perfil Completo
+## Plano: Pastoralis Visível para Fiéis + Gestão Completa de Pastorais
 
-### 1. Ocultar Sidebar para o Fiel
-- Em `src/App.tsx`: não renderizar `<Sidebar>`, `mobile-menu-btn`, `sidebar-overlay` e `<header>` quando `currentLevel === 'fiel'`
-- Em `src/App.css`: classe `.level-fiel .main-content` ocupa 100% da largura
+### Contexto Atual
+- Pastorais já existem no banco (`pastoral_groups`, `pastoral_members`, `pastoral_events`) com CRUD funcional para admins
+- O fiel atualmente vê apenas calendário de agendamento + Jornada de Fé (sem acesso a Pastoralis)
+- A tabela `pastoral_members` tem `person_name` e `role` (coordenador, vice, tesoureiro, secretário, membro)
 
-### 2. Redesenhar FielHome (tela principal do fiel)
-**Arquivo:** `src/components/FielHome.tsx` + `FielHome.css`
+### Mudanças Propostas
 
-- **Header compacto**: avatar clicável (abre perfil), saudação, nome da paróquia, botão logout
-- **Calendário mensal**: dias com horários disponíveis destacados; clicar num dia mostra slots vagos
-- **Lista de slots vagos**: intervalos de 30min (6h–20h) não ocupados na agenda do padre; botão "Agendar" abre o wizard pré-preenchido
-- **Meus Agendamentos**: próximos compromissos do fiel com status
-- **Jornada de Fé**: seção de sacramentos mantida
+**1. Adicionar aba "Minhas Pastorais" na tela do Fiel** (`src/components/FielHome.tsx`)
+- Nova aba/seção no FielHome mostrando as pastorais das quais o fiel é membro
+- Vincular o fiel às pastorais usando a tabela `pastoral_members` (campo `person_id` já existe, será usado com o `auth.uid()`)
+- Ao clicar numa pastoral, abre uma view com:
+  - Nome, descrição e equipe (coordenador, vice, tesoureiro listados com destaque)
+  - Calendário de eventos da pastoral (somente leitura para membros comuns)
+  - Se o fiel for coordenador/vice: botão para criar/editar eventos
 
-### 3. API de Slots Disponíveis
-**Arquivo:** `src/services/api.ts`
+**2. Novo componente: `FielPastorais.tsx`**
+- Lista as pastorais do fiel (busca `pastoral_members` onde `person_id = auth.uid()`)
+- Submenu lateral/tabs com cada pastoral
+- Dentro de cada pastoral:
+  - **Equipe**: cards com coordenador, vice, tesoureiro e membros
+  - **Calendário**: eventos da pastoral em formato timeline/lista, com datas futuras em destaque
+  - **Ações do coordenador**: criar evento (se role = coordenador ou vice_coordenador)
 
-- Novo método `ignisApi.appointments.getAvailableSlots(tenantId, date)` que busca appointments do dia e retorna intervalos de 30min livres entre 6h–20h
+**3. Vincular fiel à pastoral no cadastro** (`src/components/ProfileModal.tsx`)
+- Adicionar campo multi-select "Minhas Pastorais" no modal de perfil do fiel
+- Ao selecionar uma pastoral, cria registro em `pastoral_members` com `person_id = auth.uid()` e `role = 'membro'`
+- Ao desmarcar, remove o registro
 
-### 4. Perfil do Fiel — Campos Adicionais
-**Migração de banco**: adicionar colunas `phone` e `address` à tabela `profiles`
+**4. RLS: Permitir fiel gerenciar sua própria participação**
+- Nova policy em `pastoral_members`: fiel pode INSERT/DELETE onde `person_id = auth.uid()` e `role = 'membro'`
+- Nova policy em `pastoral_events`: fiel pode INSERT onde é coordenador/vice do grupo (subquery em `pastoral_members`)
+- Policies de SELECT já existem (tenant-scoped) e cobrem o fiel
 
-**Arquivo:** `src/components/ProfileModal.tsx` + `ProfileModal.css`
-
-O modal já suporta avatar, nome e senha. Será expandido com:
-- **Telefone/WhatsApp** (novo campo)
-- **Endereço** (novo campo)
-- Todos editáveis e salvos na tabela `profiles`
-
-### 5. RLS
-As políticas atuais de `profiles` já permitem `UPDATE` do próprio registro (`profiles_update_own`), então os novos campos serão editáveis sem mudança de RLS. A policy `appointments_insert_tenant` já permite o fiel criar agendamentos.
+**5. Coordenador pode criar eventos** (`PastoralGroups.tsx` ou novo componente)
+- No `FielPastorais`, se o fiel tem role `coordenador` ou `vice_coordenador` no grupo, exibir botão "Novo Evento"
+- Formulário simples: título, data/hora, descrição
+- Insere em `pastoral_events`
 
 ### Fluxo do Usuário
 
 ```text
-Fiel faz login → Tela cheia (sem sidebar)
-  ├── Header: Avatar (abre perfil) + "Salve Maria, [Nome]!" + Sair
-  ├── Calendário Mensal (dias com horários livres em destaque)
-  │   └── Clica num dia → Lista de slots vagos do padre
-  │       └── "Agendar" → Wizard pré-preenchido
-  ├── Meus Agendamentos (status: pendente/confirmado)
-  ├── Jornada de Fé (sacramentos)
-  └── Modal de Perfil: avatar, nome, telefone, endereço, senha
+Fiel faz login → Tela FielHome
+  ├── Calendário de Agendamentos (existente)
+  ├── Minhas Pastorais (NOVO)
+  │   ├── PLC Masculino ← clica
+  │   │   ├── Equipe: Coordenador João, Vice Maria, Tesoureiro Pedro
+  │   │   ├── Próximos Eventos: Reunião 28/03, Retiro 15/04
+  │   │   └── [Se coordenador] Botão "Novo Evento"
+  │   ├── Terço dos Homens
+  │   └── Acolhida
+  ├── Meus Agendamentos (existente)
+  └── Jornada de Fé (existente)
+
+Modal de Perfil:
+  ├── Avatar, Nome, Telefone, Endereço, Senha (existente)
+  └── Minhas Pastorais: [multi-select das pastorais do tenant] (NOVO)
 ```
 
 ### Arquivos Impactados
 
 | Arquivo | Ação |
 |---|---|
-| `src/App.tsx` | Condicionar sidebar/header para `!== 'fiel'` |
-| `src/App.css` | Full-width para nível fiel |
-| `src/components/FielHome.tsx` | Redesenho completo com calendário + slots |
-| `src/components/FielHome.css` | Novos estilos |
-| `src/services/api.ts` | Método `getAvailableSlots()` |
-| `src/components/ProfileModal.tsx` | Campos telefone e endereço |
-| Migração SQL | `ALTER TABLE profiles ADD COLUMN phone text, ADD COLUMN address text` |
+| `src/components/FielHome.tsx` | Adicionar seção/aba "Minhas Pastorais" |
+| `src/components/FielPastorais.tsx` (novo) | Componente com lista de pastorais, equipe, calendário e ações de coordenador |
+| `src/components/FielPastorais.css` (novo) | Estilos do componente |
+| `src/components/ProfileModal.tsx` | Multi-select de pastorais |
+| Migração SQL | RLS policies para fiel em `pastoral_members` (self-insert/delete) e `pastoral_events` (insert se coordenador) |
+
+### Detalhes Técnicos
+
+- **Vínculo**: usa `pastoral_members.person_id` (já existe na tabela) com `auth.uid()` para identificar o fiel
+- **Roles na pastoral**: coordenador e vice podem criar eventos; demais só visualizam
+- **Sem mudança de schema**: tabelas `pastoral_groups`, `pastoral_members`, `pastoral_events` já têm todas as colunas necessárias
+- **Apenas novas RLS policies** para permitir que o fiel insira/remova sua própria participação e que coordenadores criem eventos
 
