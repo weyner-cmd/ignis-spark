@@ -108,3 +108,37 @@
   padding-top: 16px;
   border-top: 1px solid var(--border);
 }
+
+.pastoral-multiselect {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.pastoral-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.65rem;
+  border-radius: var(--radius-sm, 6px);
+  border: 1px solid var(--border);
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: var(--transition, all 0.2s ease);
+  background: transparent;
+}
+
+.pastoral-chip input[type="checkbox"] {
+  display: none;
+}
+
+.pastoral-chip.active {
+  background: var(--accent, rgba(212, 175, 55, 0.15));
+  border-color: var(--accent-foreground, #d4af37);
+  color: var(--accent-foreground, #d4af37);
+  font-weight: 500;
+}
+
+.pastoral-chip:hover {
+  background: var(--surface-hover, rgba(255, 255, 255, 0.05));
+}
