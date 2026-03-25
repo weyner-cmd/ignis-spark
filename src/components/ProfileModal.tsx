@@ -212,6 +212,25 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) =
             } disabled />
           </div>
 
+          {/* Pastoral membership multi-select */}
+          {allGroups.length > 0 && (
+            <div className="form-group">
+              <label><Users size={14} /> Minhas Pastorais</label>
+              <div className="pastoral-multiselect">
+                {allGroups.map(g => (
+                  <label key={g.id} className={`pastoral-chip${myGroupIds.has(g.id) ? ' active' : ''}`}>
+                    <input
+                      type="checkbox"
+                      checked={myGroupIds.has(g.id)}
+                      onChange={() => toggleGroup(g.id)}
+                    />
+                    <span>{g.name}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          )}
+
           <button
             className="btn-secondary password-toggle"
             onClick={() => setShowPasswordSection(!showPasswordSection)}
