@@ -4,6 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useTenant } from '../contexts/TenantContext';
 import { ignisApi } from '../services/api';
 import { AppointmentWizard } from './AppointmentWizard';
+import { FielPastorais } from './FielPastorais';
 import type { Appointment, Sacrament } from '../services/api';
 import { format, startOfDay, addDays, startOfMonth, endOfMonth, eachDayOfInterval, getDay, addMonths, subMonths, isSameDay, isToday } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
