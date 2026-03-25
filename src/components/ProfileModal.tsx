@@ -121,6 +121,28 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) =
         if (error) throw error;
       }
 
+      // Update pastoral memberships
+      if (activeTenant?.id) {
+        const added = [...myGroupIds].filter(id => !originalGroupIds.has(id));
+        const removed = [...originalGroupIds].filter(id => !myGroupIds.has(id));
+        for (const groupId of added) {
+          await supabase.from('pastoral_members').insert({
+            group_id: groupId,
+            tenant_id: activeTenant.id,
+            person_id: user.id,
+            person_name: fullName || profile?.full_name || user.email || '',
+            role: 'membro',
+          });
+        }
+        for (const groupId of removed) {
+          await supabase.from('pastoral_members')
+            .delete()
+            .eq('group_id', groupId)
+            .eq('person_id', user.id)
+            .eq('role', 'membro');
+        }
+      }
+
       toast.success('Perfil atualizado com sucesso!');
       onClose();
       // Reload to reflect changes
