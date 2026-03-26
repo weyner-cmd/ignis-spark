@@ -210,6 +210,29 @@ export const ParishesTable: React.FC<{ refreshTrigger?: number }> = ({ refreshTr
                     parishId={selectedTenant.id}
                 />
             )}
+
+            {/* Delete Confirmation Modal */}
+            {deleteTarget && (
+                <div className="delete-modal-overlay" onClick={() => !isDeleting && setDeleteTarget(null)}>
+                    <div className="delete-modal glass" onClick={e => e.stopPropagation()}>
+                        <div className="delete-modal-icon">
+                            <AlertTriangle size={32} />
+                        </div>
+                        <h3>Deletar Paróquia</h3>
+                        <p className="delete-message">
+                            Tem certeza que deseja deletar a paróquia <strong>{deleteTarget.name}</strong>? Esta ação não pode ser desfeita e todos os dados vinculados serão removidos.
+                        </p>
+                        <div className="delete-modal-actions">
+                            <button className="btn-secondary" onClick={() => setDeleteTarget(null)} disabled={isDeleting}>
+                                Cancelar
+                            </button>
+                            <button className="btn-danger" onClick={confirmDelete} disabled={isDeleting}>
+                                {isDeleting ? <><Loader2 className="spin" size={16} /> Deletando...</> : 'Deletar'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
