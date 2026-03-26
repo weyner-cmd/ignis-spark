@@ -840,6 +840,12 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_available_slots: {
+        Args: { p_date: string; p_interval_min?: number; p_tenant_id: string }
+        Returns: {
+          slot_time: string
+        }[]
+      }
       get_my_role: { Args: never; Returns: string }
       get_my_tenant_id: { Args: never; Returns: string }
     }
