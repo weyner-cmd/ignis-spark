@@ -637,19 +637,14 @@ export const ignisApi = {
             return data;
         },
         getGlobalStats: async () => {
-            // Fetch aggregated data for global map
-            const { data: parishes, error: pError } = await supabase.from('tenants').select('id, name');
-            const { data: communities, error: cError } = await supabase.from('sub_tenants').select('tenant_id');
-            const { data: appointments, error: aError } = await supabase.from('appointments').select('tenant_id, status');
-
-            if (pError || cError || aError) throw pError || cError || aError;
-
-            return parishes.map((p: any) => ({
-                id: p.id,
-                name: p.name,
-                communitiesCount: (communities || []).filter((c: any) => c.tenant_id === p.id).length,
-                activeAppointments: (appointments || []).filter((a: any) => a.tenant_id === p.id && a.status === 'confirmed').length,
-                totalAppointments: (appointments || []).filter((a: any) => a.tenant_id === p.id).length
+            const { data, error } = await supabase.rpc('get_global_parish_stats');
+            if (error) throw error;
+            return (data || []).map((row: any) => ({
+                id: row.id,
+                name: row.name,
+                communitiesCount: Number(row.communities_count),
+                activeAppointments: Number(row.active_appointments),
+                totalAppointments: Number(row.total_appointments)
             }));
         }
     },
