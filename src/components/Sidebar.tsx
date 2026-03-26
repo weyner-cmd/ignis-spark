@@ -44,7 +44,6 @@ const navGroups: NavGroup[] = [
     title: 'GESTÃO PAROQUIAL',
     items: [
       { icon: Calendar, label: 'Agenda do Padre', id: 'priest-agenda' },
-      { icon: Users, label: 'Estratégia Pastoral', id: 'pastoralis' },
       { icon: FileBarChart, label: 'Relatórios', id: 'reports' },
     ],
   },
@@ -52,6 +51,7 @@ const navGroups: NavGroup[] = [
     title: 'MÓDULOS IGNIS',
     items: [
       { icon: ScrollText, label: 'Sacramenta', id: 'sacramenta' },
+      { icon: Users, label: 'Pastoralis', id: 'pastoralis' },
       { icon: MapPin, label: 'Missio', id: 'missio' },
       { icon: Heart, label: 'Communio', id: 'communio' },
       { icon: Wallet, label: 'Administratio', id: 'administratio' },
