@@ -161,6 +161,15 @@ export const ParishesTable: React.FC<{ refreshTrigger?: number }> = ({ refreshTr
                                     >
                                         <Shield size={16} />
                                     </button>
+                                    {canEdit && (
+                                        <button
+                                            className="action-btn delete"
+                                            onClick={() => setDeleteTarget(parish)}
+                                            title="Deletar Paróquia"
+                                        >
+                                            <Trash2 size={16} />
+                                        </button>
+                                    )}
                                 </div>
                             </td>
                         </tr>
