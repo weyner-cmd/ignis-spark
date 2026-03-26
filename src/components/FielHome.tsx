@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Award, Calendar, Clock, ChevronLeft, ChevronRight, Plus, LogOut } from 'lucide-react';
+import { Award, Calendar, Clock, ChevronLeft, ChevronRight, Plus, LogOut, ArrowLeftRight } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useTenant } from '../contexts/TenantContext';
 import { ignisApi } from '../services/api';
