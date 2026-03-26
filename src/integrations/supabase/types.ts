@@ -94,6 +94,20 @@ export type Database = {
             referencedRelation: "tenants"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "fk_appointments_subtenant"
+            columns: ["sub_tenant_id"]
+            isOneToOne: false
+            referencedRelation: "sub_tenants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_appointments_tenant"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
         ]
       }
       parish_assets: {
@@ -138,6 +152,13 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "fk_parish_assets_tenant"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "parish_assets_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: false
@@ -175,6 +196,20 @@ export type Database = {
           title?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "fk_pastoral_events_group"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "pastoral_groups"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_pastoral_events_tenant"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "pastoral_events_group_id_fkey"
             columns: ["group_id"]
@@ -221,6 +256,13 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "fk_pastoral_groups_tenant"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "pastoral_groups_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: false
@@ -264,6 +306,27 @@ export type Database = {
           tenant_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "fk_pastoral_members_group"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "pastoral_groups"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_pastoral_members_person"
+            columns: ["person_id"]
+            isOneToOne: false
+            referencedRelation: "people"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_pastoral_members_tenant"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "pastoral_members_group_id_fkey"
             columns: ["group_id"]
@@ -338,6 +401,13 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "fk_people_tenant"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "people_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: false
@@ -390,6 +460,27 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "fk_profiles_role"
+            columns: ["role_id"]
+            isOneToOne: false
+            referencedRelation: "roles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_profiles_subtenant"
+            columns: ["sub_tenant_id"]
+            isOneToOne: false
+            referencedRelation: "sub_tenants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_profiles_tenant"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "profiles_role_id_fkey"
             columns: ["role_id"]
@@ -482,6 +573,27 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "fk_sacraments_celebrant"
+            columns: ["celebrant_id"]
+            isOneToOne: false
+            referencedRelation: "people"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_sacraments_subject"
+            columns: ["subject_id"]
+            isOneToOne: false
+            referencedRelation: "people"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_sacraments_tenant"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "sacraments_celebrant_id_fkey"
             columns: ["celebrant_id"]
             isOneToOne: false
@@ -546,6 +658,13 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "fk_staff_tenant"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "staff_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: false
@@ -577,6 +696,13 @@ export type Database = {
           tenant_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "fk_sub_tenants_tenant"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "sub_tenants_tenant_id_fkey"
             columns: ["tenant_id"]
@@ -693,6 +819,13 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "fk_tithes_tenant"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "tithes_tenant_id_fkey"
             columns: ["tenant_id"]
