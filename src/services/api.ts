@@ -131,6 +131,13 @@ export const ignisApi = {
                 .single();
             if (error) throw error;
             return newTenant as Tenant;
+        },
+        delete: async (id: string) => {
+            const { error } = await supabase
+                .from('tenants')
+                .delete()
+                .eq('id', id);
+            if (error) throw error;
         }
     },
     communities: {

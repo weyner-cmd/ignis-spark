@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { MoreVertical, CheckCircle, XCircle, Shield, Edit3 } from 'lucide-react';
+import { MoreVertical, CheckCircle, XCircle, Shield, Edit3, Trash2, AlertTriangle, Loader2 } from 'lucide-react';
 import { ignisApi } from '../services/api';
 import type { Tenant } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 import { ModuleToggleModal } from './ModuleToggleModal';
 import { GovernanceModal } from './Governance/GovernanceModal';
 import { EditParishModal } from './EditParishModal';
+import toast from 'react-hot-toast';
 import './ParishesTable.css';
 
 export const ParishesTable: React.FC<{ refreshTrigger?: number }> = ({ refreshTrigger }) => {
@@ -15,6 +16,8 @@ export const ParishesTable: React.FC<{ refreshTrigger?: number }> = ({ refreshTr
     const [isModuleModalOpen, setIsModuleModalOpen] = useState(false);
     const [isGovernanceModalOpen, setIsGovernanceModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [deleteTarget, setDeleteTarget] = useState<Tenant | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
     const { profile } = useAuth();
 
     // permissions check
@@ -36,7 +39,22 @@ export const ParishesTable: React.FC<{ refreshTrigger?: number }> = ({ refreshTr
             setIsLoading(false);
         };
         fetchData();
-    }, [refreshTrigger, isModuleModalOpen]); // Refresh when modal closes
+    }, [refreshTrigger, isModuleModalOpen]);
+
+    const confirmDelete = async () => {
+        if (!deleteTarget) return;
+        setIsDeleting(true);
+        try {
+            await ignisApi.tenants.delete(deleteTarget.id);
+            setParishes(prev => prev.filter(p => p.id !== deleteTarget.id));
+            toast.success('Paróquia deletada com sucesso.');
+            setDeleteTarget(null);
+        } catch (err: any) {
+            toast.error(err?.message || 'Erro ao deletar paróquia.');
+        } finally {
+            setIsDeleting(false);
+        }
+    };
 
     if (isLoading) {
         return (
@@ -143,6 +161,15 @@ export const ParishesTable: React.FC<{ refreshTrigger?: number }> = ({ refreshTr
                                     >
                                         <Shield size={16} />
                                     </button>
+                                    {canEdit && (
+                                        <button
+                                            className="action-btn delete"
+                                            onClick={() => setDeleteTarget(parish)}
+                                            title="Deletar Paróquia"
+                                        >
+                                            <Trash2 size={16} />
+                                        </button>
+                                    )}
                                 </div>
                             </td>
                         </tr>
@@ -182,6 +209,29 @@ export const ParishesTable: React.FC<{ refreshTrigger?: number }> = ({ refreshTr
                     }}
                     parishId={selectedTenant.id}
                 />
+            )}
+
+            {/* Delete Confirmation Modal */}
+            {deleteTarget && (
+                <div className="delete-modal-overlay" onClick={() => !isDeleting && setDeleteTarget(null)}>
+                    <div className="delete-modal glass" onClick={e => e.stopPropagation()}>
+                        <div className="delete-modal-icon">
+                            <AlertTriangle size={32} />
+                        </div>
+                        <h3>Deletar Paróquia</h3>
+                        <p className="delete-message">
+                            Tem certeza que deseja deletar a paróquia <strong>{deleteTarget.name}</strong>? Esta ação não pode ser desfeita e todos os dados vinculados serão removidos.
+                        </p>
+                        <div className="delete-modal-actions">
+                            <button className="btn-secondary" onClick={() => setDeleteTarget(null)} disabled={isDeleting}>
+                                Cancelar
+                            </button>
+                            <button className="btn-danger" onClick={confirmDelete} disabled={isDeleting}>
+                                {isDeleting ? <><Loader2 className="spin" size={16} /> Deletando...</> : 'Deletar'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
             )}
         </div>
     );
