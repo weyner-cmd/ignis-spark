@@ -162,9 +162,16 @@ export const FielHome: React.FC<FielHomeProps> = ({ onProfileClick, canSwitchLev
             <p className="fiel-subtitle">{parishName}</p>
           </div>
         </div>
-        <button className="notif-btn logout-btn" onClick={() => signOut()} aria-label="Sair">
-          <LogOut size={20} />
-        </button>
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          {canSwitchLevel && (
+            <button className="notif-btn" onClick={onSwitchLevel} aria-label="Trocar visão" title="Trocar visão">
+              <ArrowLeftRight size={20} />
+            </button>
+          )}
+          <button className="notif-btn logout-btn" onClick={() => signOut()} aria-label="Sair">
+            <LogOut size={20} />
+          </button>
+        </div>
       </header>
 
       {/* Monthly Calendar */}

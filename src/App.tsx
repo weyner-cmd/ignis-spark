@@ -343,7 +343,7 @@ function App() {
           </>
         );
       case 'fiel':
-        return <FielHome onProfileClick={() => setIsProfileOpen(true)} />;
+        return <FielHome onProfileClick={() => setIsProfileOpen(true)} canSwitchLevel={allowedLevels.length > 1} onSwitchLevel={() => setCurrentLevel(defaultLevel === 'fiel' ? allowedLevels[0] : defaultLevel)} />;
     }
   };
 
