@@ -10,9 +10,9 @@
 .tenant-dropdown {
   appearance: none;
   -webkit-appearance: none;
-  background: transparent;
+  background: var(--surface);
   border: none;
-  color: inherit;
+  color: var(--text-primary);
   font: inherit;
   font-size: 0.85rem;
   font-weight: 600;
@@ -20,6 +20,11 @@
   padding-right: 18px;
   max-width: 220px;
   text-overflow: ellipsis;
+}
+
+.tenant-dropdown option {
+  background: var(--surface);
+  color: var(--text-primary);
 }
 
 .tenant-dropdown:focus {
