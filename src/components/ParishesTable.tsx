@@ -39,7 +39,22 @@ export const ParishesTable: React.FC<{ refreshTrigger?: number }> = ({ refreshTr
             setIsLoading(false);
         };
         fetchData();
-    }, [refreshTrigger, isModuleModalOpen]); // Refresh when modal closes
+    }, [refreshTrigger, isModuleModalOpen]);
+
+    const confirmDelete = async () => {
+        if (!deleteTarget) return;
+        setIsDeleting(true);
+        try {
+            await ignisApi.tenants.delete(deleteTarget.id);
+            setParishes(prev => prev.filter(p => p.id !== deleteTarget.id));
+            toast.success('Paróquia deletada com sucesso.');
+            setDeleteTarget(null);
+        } catch (err: any) {
+            toast.error(err?.message || 'Erro ao deletar paróquia.');
+        } finally {
+            setIsDeleting(false);
+        }
+    };
 
     if (isLoading) {
         return (
