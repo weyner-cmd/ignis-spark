@@ -28,7 +28,7 @@ const SACRAMENT_LABELS: Record<string, string> = {
 const SACRAMENT_ORDER = ['baptism', 'first_communion', 'confirmation', 'marriage', 'anointing_of_sick'];
 const WEEKDAYS = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 
-export const FielHome: React.FC<FielHomeProps> = ({ onProfileClick }) => {
+export const FielHome: React.FC<FielHomeProps> = ({ onProfileClick, canSwitchLevel, onSwitchLevel }) => {
   const { user, profile, signOut } = useAuth();
   const { activeTenant } = useTenant();
   const [currentMonth, setCurrentMonth] = useState(new Date());
