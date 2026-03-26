@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Award, Calendar, Clock, ChevronLeft, ChevronRight, Plus, LogOut } from 'lucide-react';
+import { Award, Calendar, Clock, ChevronLeft, ChevronRight, Plus, LogOut, ArrowLeftRight } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useTenant } from '../contexts/TenantContext';
 import { ignisApi } from '../services/api';
@@ -13,6 +13,8 @@ import './FielHome.css';
 
 interface FielHomeProps {
   onProfileClick?: () => void;
+  canSwitchLevel?: boolean;
+  onSwitchLevel?: () => void;
 }
 
 const SACRAMENT_LABELS: Record<string, string> = {
@@ -26,7 +28,7 @@ const SACRAMENT_LABELS: Record<string, string> = {
 const SACRAMENT_ORDER = ['baptism', 'first_communion', 'confirmation', 'marriage', 'anointing_of_sick'];
 const WEEKDAYS = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 
-export const FielHome: React.FC<FielHomeProps> = ({ onProfileClick }) => {
+export const FielHome: React.FC<FielHomeProps> = ({ onProfileClick, canSwitchLevel, onSwitchLevel }) => {
   const { user, profile, signOut } = useAuth();
   const { activeTenant } = useTenant();
   const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -160,9 +162,16 @@ export const FielHome: React.FC<FielHomeProps> = ({ onProfileClick }) => {
             <p className="fiel-subtitle">{parishName}</p>
           </div>
         </div>
-        <button className="notif-btn logout-btn" onClick={() => signOut()} aria-label="Sair">
-          <LogOut size={20} />
-        </button>
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          {canSwitchLevel && (
+            <button className="notif-btn" onClick={onSwitchLevel} aria-label="Trocar visão" title="Trocar visão">
+              <ArrowLeftRight size={20} />
+            </button>
+          )}
+          <button className="notif-btn logout-btn" onClick={() => signOut()} aria-label="Sair">
+            <LogOut size={20} />
+          </button>
+        </div>
       </header>
 
       {/* Monthly Calendar */}
