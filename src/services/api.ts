@@ -323,49 +323,23 @@ export const ignisApi = {
             if (error) throw error;
         },
         getAvailableSlots: async (tenantId: string, date: Date) => {
-            const { startOfDay, endOfDay } = await import('date-fns');
-            const dayStart = startOfDay(date);
-            const dayEnd = endOfDay(date);
-
-            // Get all communities for this tenant
-            const communities = await ignisApi.communities.getByTenant(tenantId);
-
-            // Fetch all appointments across all communities for the day
-            const allAppointments: Appointment[] = [];
-            for (const c of communities) {
-                const appts = await ignisApi.appointments.getByDateRange(tenantId, c.id, dayStart, dayEnd);
-                allAppointments.push(...appts);
-            }
-
-            // Filter out cancelled appointments
-            const activeAppts = allAppointments.filter(a => a.status !== 'cancelled');
-
-            // Generate 30-min slots from 6:00 to 20:00
-            const slots: { time: string; hour: number; minute: number }[] = [];
-            for (let h = 6; h < 20; h++) {
-                for (const m of [0, 30]) {
-                    const slotStart = new Date(date);
-                    slotStart.setHours(h, m, 0, 0);
-                    const slotEnd = new Date(date);
-                    slotEnd.setHours(h, m + 30, 0, 0);
-
-                    // Check if this slot overlaps with any existing appointment
-                    const isOccupied = activeAppts.some(a => {
-                        const aStart = new Date(a.startTime).getTime();
-                        const aEnd = new Date(a.endTime).getTime();
-                        return slotStart.getTime() < aEnd && slotEnd.getTime() > aStart;
-                    });
-
-                    if (!isOccupied) {
-                        slots.push({
-                            time: `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`,
-                            hour: h,
-                            minute: m,
-                        });
-                    }
-                }
-            }
-            return slots;
+            const dateStr = date.toISOString().split('T')[0];
+            const { data, error } = await supabase.rpc('get_available_slots', {
+                p_tenant_id: tenantId,
+                p_date: dateStr,
+                p_interval_min: 30
+            });
+            if (error) throw error;
+            return (data || []).map((row: any) => {
+                const parts = String(row.slot_time).split(':');
+                const h = parseInt(parts[0], 10);
+                const m = parseInt(parts[1], 10);
+                return {
+                    time: `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`,
+                    hour: h,
+                    minute: m,
+                };
+            });
         }
     },
     sacraments: {
@@ -663,19 +637,14 @@ export const ignisApi = {
             return data;
         },
         getGlobalStats: async () => {
-            // Fetch aggregated data for global map
-            const { data: parishes, error: pError } = await supabase.from('tenants').select('id, name');
-            const { data: communities, error: cError } = await supabase.from('sub_tenants').select('tenant_id');
-            const { data: appointments, error: aError } = await supabase.from('appointments').select('tenant_id, status');
-
-            if (pError || cError || aError) throw pError || cError || aError;
-
-            return parishes.map((p: any) => ({
-                id: p.id,
-                name: p.name,
-                communitiesCount: (communities || []).filter((c: any) => c.tenant_id === p.id).length,
-                activeAppointments: (appointments || []).filter((a: any) => a.tenant_id === p.id && a.status === 'confirmed').length,
-                totalAppointments: (appointments || []).filter((a: any) => a.tenant_id === p.id).length
+            const { data, error } = await supabase.rpc('get_global_parish_stats' as any);
+            if (error) throw error;
+            return ((data as any[]) || []).map((row: any) => ({
+                id: row.id,
+                name: row.name,
+                communitiesCount: Number(row.communities_count),
+                activeAppointments: Number(row.active_appointments),
+                totalAppointments: Number(row.total_appointments)
             }));
         }
     },
