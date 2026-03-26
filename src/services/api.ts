@@ -637,9 +637,9 @@ export const ignisApi = {
             return data;
         },
         getGlobalStats: async () => {
-            const { data, error } = await supabase.rpc('get_global_parish_stats');
+            const { data, error } = await supabase.rpc('get_global_parish_stats' as any);
             if (error) throw error;
-            return (data || []).map((row: any) => ({
+            return ((data as any[]) || []).map((row: any) => ({
                 id: row.id,
                 name: row.name,
                 communitiesCount: Number(row.communities_count),
