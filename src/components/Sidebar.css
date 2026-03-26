@@ -41,7 +41,7 @@
 .sidebar-slogan {
     font-size: 11px;
     font-style: italic;
-  color: var(--warning);
+  color: var(--warning-color);
   padding: 0 8px 20px 8px;
   opacity: 0.85;
     line-height: 1.4;
