@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { MoreVertical, CheckCircle, XCircle, Shield, Edit3 } from 'lucide-react';
+import { MoreVertical, CheckCircle, XCircle, Shield, Edit3, Trash2, AlertTriangle, Loader2 } from 'lucide-react';
 import { ignisApi } from '../services/api';
 import type { Tenant } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 import { ModuleToggleModal } from './ModuleToggleModal';
 import { GovernanceModal } from './Governance/GovernanceModal';
 import { EditParishModal } from './EditParishModal';
+import toast from 'react-hot-toast';
 import './ParishesTable.css';
 
 export const ParishesTable: React.FC<{ refreshTrigger?: number }> = ({ refreshTrigger }) => {
