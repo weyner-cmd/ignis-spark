@@ -16,6 +16,8 @@ export const ParishesTable: React.FC<{ refreshTrigger?: number }> = ({ refreshTr
     const [isModuleModalOpen, setIsModuleModalOpen] = useState(false);
     const [isGovernanceModalOpen, setIsGovernanceModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [deleteTarget, setDeleteTarget] = useState<Tenant | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
     const { profile } = useAuth();
 
     // permissions check
