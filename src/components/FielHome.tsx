@@ -13,6 +13,8 @@ import './FielHome.css';
 
 interface FielHomeProps {
   onProfileClick?: () => void;
+  canSwitchLevel?: boolean;
+  onSwitchLevel?: () => void;
 }
 
 const SACRAMENT_LABELS: Record<string, string> = {
