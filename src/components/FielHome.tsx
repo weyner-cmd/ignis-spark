@@ -164,7 +164,7 @@ export const FielHome: React.FC<FielHomeProps> = ({ onProfileClick, canSwitchLev
         </div>
         <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
           {canSwitchLevel && (
-            <button className="notif-btn" onClick={onSwitchLevel} aria-label="Trocar visão" title="Trocar visão">
+            <button className="notif-btn" onClick={onSwitchLevel} aria-label="Trocar visão" title="Trocar visão" style={{ color: 'var(--warning-color)' }}>
               <ArrowLeftRight size={20} />
             </button>
           )}
