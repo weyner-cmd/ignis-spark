@@ -60,15 +60,24 @@ export const UserManagement: React.FC = () => {
   const [isDeleting, setIsDeleting] = useState(false);
 
   const loadUsers = async () => {
-    if (!activeTenant) return;
     setIsLoading(true);
     try {
-      const { data, error } = await supabase
+      let query = supabase
         .from('profiles')
         .select('*')
-        .eq('tenant_id', activeTenant.id)
         .order('created_at', { ascending: false });
 
+      if (showOrphans && isSuperAdmin) {
+        query = query.is('tenant_id', null);
+      } else if (activeTenant) {
+        query = query.eq('tenant_id', activeTenant.id);
+      } else {
+        setUsers([]);
+        setIsLoading(false);
+        return;
+      }
+
+      const { data, error } = await query;
       if (error) throw error;
       setUsers(data || []);
     } catch (err: any) {
@@ -80,7 +89,7 @@ export const UserManagement: React.FC = () => {
 
   useEffect(() => {
     loadUsers();
-  }, [activeTenant?.id]);
+  }, [activeTenant?.id, showOrphans]);
 
   const filteredUsers = useMemo(() => {
     return users.filter(u => {
