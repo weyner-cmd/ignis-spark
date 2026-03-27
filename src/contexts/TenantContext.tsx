@@ -34,6 +34,8 @@ interface TenantContextType {
     setSubTenant: (subTenant: SubTenant | null) => void;
     switchTenant: (tenantId: string) => void;
     updateTenantModules: (modules: string[]) => Promise<void>;
+    updateTenantModulesById: (tenantId: string, modules: string[]) => Promise<void>;
+    refreshTenants: () => Promise<void>;
     isLoading: boolean;
 }
 
