@@ -176,19 +176,45 @@ export const TenantProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
     const updateTenantModules = async (modules: string[]) => {
         if (!activeTenant) return;
+        await updateTenantModulesById(activeTenant.id, modules);
+    };
 
+    const updateTenantModulesById = async (tenantId: string, modules: string[]) => {
         try {
             const { error } = await supabase
                 .from('tenants')
                 .update({ active_modules: modules })
-                .eq('id', activeTenant.id);
+                .eq('id', tenantId);
 
             if (error) throw error;
 
-            setActiveTenant({ ...activeTenant, active_modules: modules });
+            // Update local state
+            setAllTenants(prev => prev.map(t => t.id === tenantId ? { ...t, active_modules: modules } : t));
+            if (activeTenant?.id === tenantId) {
+                setActiveTenant(prev => prev ? { ...prev, active_modules: modules } : prev);
+            }
         } catch (error) {
             console.error('Error updating tenant modules:', error);
             throw error;
+        }
+    };
+
+    const refreshTenants = async () => {
+        try {
+            const { data, error } = await supabase
+                .from('tenants')
+                .select('*')
+                .eq('status', 'active')
+                .order('name');
+            if (error) throw error;
+            const tenants = (data || []) as Tenant[];
+            setAllTenants(tenants);
+            if (activeTenant) {
+                const updated = tenants.find(t => t.id === activeTenant.id);
+                if (updated) setActiveTenant(updated);
+            }
+        } catch (error) {
+            console.error('Error refreshing tenants:', error);
         }
     };
 
@@ -201,6 +227,8 @@ export const TenantProvider: React.FC<{ children: React.ReactNode }> = ({ childr
             setSubTenant: setActiveSubTenant,
             switchTenant,
             updateTenantModules,
+            updateTenantModulesById,
+            refreshTenants,
             isLoading
         }}>
             {children}
