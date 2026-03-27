@@ -76,6 +76,8 @@ export const UserManagement: React.FC = () => {
 
       if (showOrphans && isSuperAdmin) {
         query = query.is('tenant_id', null);
+      } else if (isSuperAdmin && tenantFilter === 'all') {
+        // No tenant filter — fetch all profiles
       } else if (activeTenant) {
         query = query.eq('tenant_id', activeTenant.id);
       } else {
@@ -96,7 +98,7 @@ export const UserManagement: React.FC = () => {
 
   useEffect(() => {
     loadUsers();
-  }, [activeTenant?.id, showOrphans]);
+  }, [activeTenant?.id, showOrphans, tenantFilter]);
 
   const filteredUsers = useMemo(() => {
     return users.filter(u => {
