@@ -87,12 +87,13 @@ Deno.serve(async (req) => {
     }
 
     if (action === 'update') {
-      const { userId, fullName, role, status } = body
+      const { userId, fullName, role, status, tenantId } = body
 
-      const updateData: Record<string, string> = {}
+      const updateData: Record<string, string | null> = {}
       if (fullName !== undefined) updateData.full_name = fullName
       if (role !== undefined) updateData.role = role
       if (status !== undefined) updateData.status = status
+      if (tenantId !== undefined) updateData.tenant_id = tenantId
 
       const { error } = await adminClient
         .from('profiles')
