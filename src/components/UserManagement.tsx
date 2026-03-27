@@ -59,7 +59,7 @@ export const UserManagement: React.FC = () => {
 
   // Edit modal
   const [editUser, setEditUser] = useState<UserProfile | null>(null);
-  const [editForm, setEditForm] = useState({ fullName: '', role: '', status: '' });
+  const [editForm, setEditForm] = useState({ fullName: '', role: '', status: '', tenantId: '' });
   const [isSaving, setIsSaving] = useState(false);
 
   // Delete
