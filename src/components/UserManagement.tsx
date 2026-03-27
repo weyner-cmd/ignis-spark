@@ -437,6 +437,22 @@ export const UserManagement: React.FC = () => {
                   <option value="inactive">Inativo</option>
                 </select>
               </div>
+              {isSuperAdmin && (
+                <div className="um-field">
+                  <label>Paróquia</label>
+                  <select
+                    value={editForm.tenantId}
+                    onChange={e => setEditForm(f => ({ ...f, tenantId: e.target.value }))}
+                  >
+                    <option value="">Sem Paróquia</option>
+                    {allTenants.map(t => (
+                      <option key={t.id} value={t.id}>{t.name}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
+                </select>
+              </div>
             </div>
             <div className="um-modal-footer">
               <button className="btn-secondary" onClick={() => setEditUser(null)} disabled={isSaving}>Cancelar</button>
