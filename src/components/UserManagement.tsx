@@ -266,6 +266,7 @@ export const UserManagement: React.FC = () => {
           <thead>
             <tr>
               <th>Nome</th>
+              {isSuperAdmin && tenantFilter === 'all' && <th>Paróquia</th>}
               <th>Role</th>
               <th>Status</th>
               <th>Criado em</th>
@@ -277,6 +278,7 @@ export const UserManagement: React.FC = () => {
               Array.from({ length: 5 }).map((_, i) => (
                 <tr key={i} className="um-skeleton-row">
                   <td><div className="skeleton" /></td>
+                  {isSuperAdmin && tenantFilter === 'all' && <td><div className="skeleton" /></td>}
                   <td><div className="skeleton" /></td>
                   <td><div className="skeleton" /></td>
                   <td><div className="skeleton" /></td>
@@ -285,7 +287,7 @@ export const UserManagement: React.FC = () => {
               ))
             ) : filteredUsers.length === 0 ? (
               <tr>
-                <td colSpan={5} className="um-empty">Nenhum usuário encontrado</td>
+                <td colSpan={isSuperAdmin && tenantFilter === 'all' ? 6 : 5} className="um-empty">Nenhum usuário encontrado</td>
               </tr>
             ) : (
               filteredUsers.map(user => (
@@ -298,6 +300,11 @@ export const UserManagement: React.FC = () => {
                       </div>
                     </div>
                   </td>
+                  {isSuperAdmin && tenantFilter === 'all' && (
+                    <td className="um-tenant-cell">
+                      {user.tenant_id ? (tenantNameMap[user.tenant_id] || 'Desconhecida') : <em>Sem Paróquia</em>}
+                    </td>
+                  )}
                   <td>
                     <span className={`um-role-badge role-${user.role}`}>
                       {roleLabelMap[user.role || 'fiel'] || user.role}
