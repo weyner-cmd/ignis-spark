@@ -240,11 +240,21 @@ export const UserManagement: React.FC = () => {
           ))}
         </select>
         {isSuperAdmin && (
+          <select
+            className="um-role-filter"
+            value={tenantFilter}
+            onChange={e => { setTenantFilter(e.target.value); setShowOrphans(false); }}
+          >
+            <option value="current">Paróquia Atual</option>
+            <option value="all">Todas as Paróquias</option>
+          </select>
+        )}
+        {isSuperAdmin && (
           <label className="um-orphan-toggle">
             <input
               type="checkbox"
               checked={showOrphans}
-              onChange={e => setShowOrphans(e.target.checked)}
+              onChange={e => { setShowOrphans(e.target.checked); if (e.target.checked) setTenantFilter('current'); }}
             />
             <span>Sem Paróquia</span>
           </label>
