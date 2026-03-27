@@ -403,6 +403,20 @@
   to { transform: rotate(360deg); }
 }
 
+.um-orphan-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: hsl(var(--foreground));
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.um-orphan-toggle input[type="checkbox"] {
+  accent-color: hsl(var(--primary));
+}
+
 @media (max-width: 640px) {
   .um-header {
     flex-direction: column;

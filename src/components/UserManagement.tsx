@@ -5,6 +5,7 @@ import {
 } from 'lucide-react';
 import { supabase } from '../services/supabase';
 import { useTenant } from '../contexts/TenantContext';
+import { useAuth } from '../contexts/AuthContext';
 import toast from 'react-hot-toast';
 import './UserManagement.css';
 
@@ -36,10 +37,13 @@ const roleLabelMap: Record<string, string> = {
 
 export const UserManagement: React.FC = () => {
   const { activeTenant } = useTenant();
+  const { profile } = useAuth();
+  const isSuperAdmin = profile?.role === 'super_admin';
   const [users, setUsers] = useState<UserProfile[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [roleFilter, setRoleFilter] = useState('all');
+  const [showOrphans, setShowOrphans] = useState(false);
 
   // Create modal
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -56,15 +60,24 @@ export const UserManagement: React.FC = () => {
   const [isDeleting, setIsDeleting] = useState(false);
 
   const loadUsers = async () => {
-    if (!activeTenant) return;
     setIsLoading(true);
     try {
-      const { data, error } = await supabase
+      let query = supabase
         .from('profiles')
         .select('*')
-        .eq('tenant_id', activeTenant.id)
         .order('created_at', { ascending: false });
 
+      if (showOrphans && isSuperAdmin) {
+        query = query.is('tenant_id', null);
+      } else if (activeTenant) {
+        query = query.eq('tenant_id', activeTenant.id);
+      } else {
+        setUsers([]);
+        setIsLoading(false);
+        return;
+      }
+
+      const { data, error } = await query;
       if (error) throw error;
       setUsers(data || []);
     } catch (err: any) {
@@ -76,7 +89,7 @@ export const UserManagement: React.FC = () => {
 
   useEffect(() => {
     loadUsers();
-  }, [activeTenant?.id]);
+  }, [activeTenant?.id, showOrphans]);
 
   const filteredUsers = useMemo(() => {
     return users.filter(u => {
@@ -217,6 +230,16 @@ export const UserManagement: React.FC = () => {
             <option key={r.value} value={r.value}>{r.label}</option>
           ))}
         </select>
+        {isSuperAdmin && (
+          <label className="um-orphan-toggle">
+            <input
+              type="checkbox"
+              checked={showOrphans}
+              onChange={e => setShowOrphans(e.target.checked)}
+            />
+            <span>Sem Paróquia</span>
+          </label>
+        )}
       </div>
 
       <div className="um-table-wrapper">
