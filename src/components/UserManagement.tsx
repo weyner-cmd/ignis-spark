@@ -451,8 +451,6 @@ export const UserManagement: React.FC = () => {
                   </select>
                 </div>
               )}
-                </select>
-              </div>
             </div>
             <div className="um-modal-footer">
               <button className="btn-secondary" onClick={() => setEditUser(null)} disabled={isSaving}>Cancelar</button>
