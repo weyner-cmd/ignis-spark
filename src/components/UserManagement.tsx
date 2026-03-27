@@ -156,6 +156,7 @@ export const UserManagement: React.FC = () => {
           fullName: editForm.fullName.trim(),
           role: editForm.role,
           status: editForm.status,
+          tenantId: editForm.tenantId || null,
         },
       });
       if (res.error) throw new Error(res.error.message);
