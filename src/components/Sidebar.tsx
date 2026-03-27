@@ -79,16 +79,19 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onTabChange, userLe
   const { profile } = useAuth();
   const { theme, toggleTheme } = useTheme();
 
+  const moduleItems = ['sacramenta', 'pastoralis', 'missio', 'communio', 'administratio'];
+
   const isItemVisible = (itemId: string): boolean => {
     if (itemId === 'home') return true;
     if (itemId === 'priest-agenda') return userLevel === 'matriz';
     if (itemId === 'global-map') return userLevel === 'super';
     if (itemId === 'users') return userLevel === 'super' || userLevel === 'matriz';
     if (itemId === 'settings') return userLevel === 'super';
-    if (itemId === 'reports') return userLevel === 'super' || userLevel === 'matriz' || (activeTenant?.active_modules?.includes(itemId) ?? false);
-    if (itemId === 'administratio') return userLevel === 'super' || userLevel === 'matriz';
-    if (!activeTenant?.active_modules) return true;
-    return activeTenant.active_modules.includes(itemId);
+    if (itemId === 'reports') return userLevel === 'super' || userLevel === 'matriz';
+    if (moduleItems.includes(itemId)) {
+      return activeTenant?.active_modules?.includes(itemId) ?? false;
+    }
+    return true;
   };
 
   const displayName = profile?.full_name || 'Usuário';
