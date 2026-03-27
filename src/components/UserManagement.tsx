@@ -36,14 +36,21 @@ const roleLabelMap: Record<string, string> = {
 };
 
 export const UserManagement: React.FC = () => {
-  const { activeTenant } = useTenant();
+  const { activeTenant, allTenants } = useTenant();
   const { profile } = useAuth();
   const isSuperAdmin = profile?.role === 'super_admin';
   const [users, setUsers] = useState<UserProfile[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [roleFilter, setRoleFilter] = useState('all');
+  const [tenantFilter, setTenantFilter] = useState('current');
   const [showOrphans, setShowOrphans] = useState(false);
+
+  const tenantNameMap = useMemo(() => {
+    const map: Record<string, string> = {};
+    allTenants.forEach(t => { map[t.id] = t.name; });
+    return map;
+  }, [allTenants]);
 
   // Create modal
   const [isCreateOpen, setIsCreateOpen] = useState(false);
