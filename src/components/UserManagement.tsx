@@ -59,7 +59,7 @@ export const UserManagement: React.FC = () => {
 
   // Edit modal
   const [editUser, setEditUser] = useState<UserProfile | null>(null);
-  const [editForm, setEditForm] = useState({ fullName: '', role: '', status: '' });
+  const [editForm, setEditForm] = useState({ fullName: '', role: '', status: '', tenantId: '' });
   const [isSaving, setIsSaving] = useState(false);
 
   // Delete
@@ -156,6 +156,7 @@ export const UserManagement: React.FC = () => {
           fullName: editForm.fullName.trim(),
           role: editForm.role,
           status: editForm.status,
+          tenantId: editForm.tenantId || null,
         },
       });
       if (res.error) throw new Error(res.error.message);
@@ -197,6 +198,7 @@ export const UserManagement: React.FC = () => {
       fullName: user.full_name || '',
       role: user.role || 'fiel',
       status: user.status || 'active',
+      tenantId: user.tenant_id || '',
     });
   };
 
@@ -435,6 +437,20 @@ export const UserManagement: React.FC = () => {
                   <option value="inactive">Inativo</option>
                 </select>
               </div>
+              {isSuperAdmin && (
+                <div className="um-field">
+                  <label>Paróquia</label>
+                  <select
+                    value={editForm.tenantId}
+                    onChange={e => setEditForm(f => ({ ...f, tenantId: e.target.value }))}
+                  >
+                    <option value="">Sem Paróquia</option>
+                    {allTenants.map(t => (
+                      <option key={t.id} value={t.id}>{t.name}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
             </div>
             <div className="um-modal-footer">
               <button className="btn-secondary" onClick={() => setEditUser(null)} disabled={isSaving}>Cancelar</button>
