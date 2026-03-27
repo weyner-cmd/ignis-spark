@@ -197,6 +197,7 @@ export const UserManagement: React.FC = () => {
       fullName: user.full_name || '',
       role: user.role || 'fiel',
       status: user.status || 'active',
+      tenantId: user.tenant_id || '',
     });
   };
 
