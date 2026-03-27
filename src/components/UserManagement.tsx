@@ -5,6 +5,7 @@ import {
 } from 'lucide-react';
 import { supabase } from '../services/supabase';
 import { useTenant } from '../contexts/TenantContext';
+import { useAuth } from '../contexts/AuthContext';
 import toast from 'react-hot-toast';
 import './UserManagement.css';
 
