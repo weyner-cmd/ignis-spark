@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Save, Loader2, CheckSquare, Square } from 'lucide-react';
-import { supabase } from '../services/supabase';
-import './OnboardingModal.css'; // Reusing modal styles
+import { useTenant } from '../contexts/TenantContext';
+import './OnboardingModal.css';
 
 interface ModuleToggleModalProps {
     isOpen: boolean;
@@ -21,6 +21,7 @@ const ALL_MODULES = [
 export const ModuleToggleModal: React.FC<ModuleToggleModalProps> = ({
     isOpen, onClose, tenant, onSuccess
 }) => {
+    const { updateTenantModulesById } = useTenant();
     const [selectedModules, setSelectedModules] = useState<string[]>([]);
     const [isSaving, setIsSaving] = useState(false);
 
@@ -43,13 +44,7 @@ export const ModuleToggleModal: React.FC<ModuleToggleModalProps> = ({
     const handleSave = async () => {
         setIsSaving(true);
         try {
-            const { error } = await supabase
-                .from('tenants')
-                .update({ active_modules: selectedModules })
-                .eq('id', tenant.id);
-
-            if (error) throw error;
-
+            await updateTenantModulesById(tenant.id, selectedModules);
             onSuccess();
             onClose();
         } catch (error) {
