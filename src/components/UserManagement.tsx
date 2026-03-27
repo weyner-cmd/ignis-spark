@@ -36,14 +36,21 @@ const roleLabelMap: Record<string, string> = {
 };
 
 export const UserManagement: React.FC = () => {
-  const { activeTenant } = useTenant();
+  const { activeTenant, allTenants } = useTenant();
   const { profile } = useAuth();
   const isSuperAdmin = profile?.role === 'super_admin';
   const [users, setUsers] = useState<UserProfile[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [roleFilter, setRoleFilter] = useState('all');
+  const [tenantFilter, setTenantFilter] = useState('current');
   const [showOrphans, setShowOrphans] = useState(false);
+
+  const tenantNameMap = useMemo(() => {
+    const map: Record<string, string> = {};
+    allTenants.forEach(t => { map[t.id] = t.name; });
+    return map;
+  }, [allTenants]);
 
   // Create modal
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -69,6 +76,8 @@ export const UserManagement: React.FC = () => {
 
       if (showOrphans && isSuperAdmin) {
         query = query.is('tenant_id', null);
+      } else if (isSuperAdmin && tenantFilter === 'all') {
+        // No tenant filter — fetch all profiles
       } else if (activeTenant) {
         query = query.eq('tenant_id', activeTenant.id);
       } else {
@@ -89,7 +98,7 @@ export const UserManagement: React.FC = () => {
 
   useEffect(() => {
     loadUsers();
-  }, [activeTenant?.id, showOrphans]);
+  }, [activeTenant?.id, showOrphans, tenantFilter]);
 
   const filteredUsers = useMemo(() => {
     return users.filter(u => {
@@ -231,11 +240,21 @@ export const UserManagement: React.FC = () => {
           ))}
         </select>
         {isSuperAdmin && (
+          <select
+            className="um-role-filter"
+            value={tenantFilter}
+            onChange={e => { setTenantFilter(e.target.value); setShowOrphans(false); }}
+          >
+            <option value="current">Paróquia Atual</option>
+            <option value="all">Todas as Paróquias</option>
+          </select>
+        )}
+        {isSuperAdmin && (
           <label className="um-orphan-toggle">
             <input
               type="checkbox"
               checked={showOrphans}
-              onChange={e => setShowOrphans(e.target.checked)}
+              onChange={e => { setShowOrphans(e.target.checked); if (e.target.checked) setTenantFilter('current'); }}
             />
             <span>Sem Paróquia</span>
           </label>
@@ -247,6 +266,7 @@ export const UserManagement: React.FC = () => {
           <thead>
             <tr>
               <th>Nome</th>
+              {isSuperAdmin && tenantFilter === 'all' && <th>Paróquia</th>}
               <th>Role</th>
               <th>Status</th>
               <th>Criado em</th>
@@ -258,6 +278,7 @@ export const UserManagement: React.FC = () => {
               Array.from({ length: 5 }).map((_, i) => (
                 <tr key={i} className="um-skeleton-row">
                   <td><div className="skeleton" /></td>
+                  {isSuperAdmin && tenantFilter === 'all' && <td><div className="skeleton" /></td>}
                   <td><div className="skeleton" /></td>
                   <td><div className="skeleton" /></td>
                   <td><div className="skeleton" /></td>
@@ -266,7 +287,7 @@ export const UserManagement: React.FC = () => {
               ))
             ) : filteredUsers.length === 0 ? (
               <tr>
-                <td colSpan={5} className="um-empty">Nenhum usuário encontrado</td>
+                <td colSpan={isSuperAdmin && tenantFilter === 'all' ? 6 : 5} className="um-empty">Nenhum usuário encontrado</td>
               </tr>
             ) : (
               filteredUsers.map(user => (
@@ -279,6 +300,11 @@ export const UserManagement: React.FC = () => {
                       </div>
                     </div>
                   </td>
+                  {isSuperAdmin && tenantFilter === 'all' && (
+                    <td className="um-tenant-cell">
+                      {user.tenant_id ? (tenantNameMap[user.tenant_id] || 'Desconhecida') : <em>Sem Paróquia</em>}
+                    </td>
+                  )}
                   <td>
                     <span className={`um-role-badge role-${user.role}`}>
                       {roleLabelMap[user.role || 'fiel'] || user.role}
