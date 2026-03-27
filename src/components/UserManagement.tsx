@@ -230,6 +230,16 @@ export const UserManagement: React.FC = () => {
             <option key={r.value} value={r.value}>{r.label}</option>
           ))}
         </select>
+        {isSuperAdmin && (
+          <label className="um-orphan-toggle">
+            <input
+              type="checkbox"
+              checked={showOrphans}
+              onChange={e => setShowOrphans(e.target.checked)}
+            />
+            <span>Sem Paróquia</span>
+          </label>
+        )}
       </div>
 
       <div className="um-table-wrapper">
