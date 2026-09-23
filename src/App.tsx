@@ -13,6 +13,7 @@ import type { SacramentType } from './components/Sacramenta/SacramentRegistry';
 import { PeopleDirectory } from './components/Pastoralis/PeopleDirectory';
 import { PastoralGroups } from './components/Pastoralis/PastoralGroups';
 import { Login } from './components/Login';
+import { ResetPasswordModal } from './components/ResetPasswordModal';
 import { Breadcrumbs } from './components/Breadcrumbs';
 import { ReportsPanel } from './components/ReportsPanel';
 import { GlobalPastoralMap } from './components/Governance/GlobalPastoralMap';
@@ -114,7 +115,7 @@ const getTabFromUrl = (): string => {
 
 function App() {
   const { activeTenant, allTenants, switchTenant, isLoading: isTenantLoading } = useTenant();
-  const { user, profile, isLoading: isAuthLoading, signOut } = useAuth();
+  const { user, profile, isLoading: isAuthLoading, signOut, isRecoveringPassword } = useAuth();
 
   const userRole = profile?.role || 'fiel';
   const allowedLevels = levelsByRole[userRole] || ['fiel'];
@@ -360,6 +361,10 @@ function App() {
     }
 
     return <div className="loading-state">Iniciando IGNIS...</div>;
+  }
+
+  if (isRecoveringPassword) {
+    return <ResetPasswordModal onClose={() => window.location.reload()} />;
   }
 
   if (!user) {

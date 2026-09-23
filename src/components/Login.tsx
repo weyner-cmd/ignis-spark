@@ -9,9 +9,9 @@ export const Login: React.FC = () => {
     const [fullName, setFullName] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [mode, setMode] = useState<'login' | 'signup'>('login');
+    const [mode, setMode] = useState<'login' | 'signup' | 'forgot'>('login');
     const [message, setMessage] = useState('');
-    const { signInWithPassword, signUp } = useAuth();
+    const { signInWithPassword, signUp, resetPassword } = useAuth();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -21,6 +21,9 @@ export const Login: React.FC = () => {
             if (mode === 'signup') {
                 await signUp(email, password, fullName);
                 setMessage('Conta criada com sucesso! Você já está logado.');
+            } else if (mode === 'forgot') {
+                await resetPassword(email);
+                setMessage('Enviamos um link de recuperação para o seu email.');
             } else {
                 await signInWithPassword(email, password);
             }
@@ -73,44 +76,60 @@ export const Login: React.FC = () => {
                             required
                         />
                     </div>
-                    <div className="form-group" style={{ position: 'relative' }}>
-                        <label>Senha</label>
-                        <div style={{ position: 'relative' }}>
-                            <input
-                                type={showPassword ? 'text' : 'password'}
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                placeholder="••••••••"
-                                required
-                                minLength={6}
-                                style={{ paddingRight: '2.5rem' }}
-                            />
+                    {mode !== 'forgot' && (
+                        <div className="form-group" style={{ position: 'relative' }}>
+                            <label>Senha</label>
+                            <div style={{ position: 'relative' }}>
+                                <input
+                                    type={showPassword ? 'text' : 'password'}
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    placeholder="••••••••"
+                                    required
+                                    minLength={6}
+                                    style={{ paddingRight: '2.5rem' }}
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    style={{
+                                        position: 'absolute',
+                                        right: '0.75rem',
+                                        top: '50%',
+                                        transform: 'translateY(-50%)',
+                                        background: 'none',
+                                        border: 'none',
+                                        cursor: 'pointer',
+                                        color: 'var(--text-muted, #888)',
+                                        padding: '0.25rem',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                    }}
+                                    aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
+                                >
+                                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                </button>
+                            </div>
+                        </div>
+                    )}
+                    {mode === 'login' && (
+                        <div style={{ textAlign: 'right' }}>
                             <button
                                 type="button"
-                                onClick={() => setShowPassword(!showPassword)}
-                                style={{
-                                    position: 'absolute',
-                                    right: '0.75rem',
-                                    top: '50%',
-                                    transform: 'translateY(-50%)',
-                                    background: 'none',
-                                    border: 'none',
-                                    cursor: 'pointer',
-                                    color: 'var(--text-muted, #888)',
-                                    padding: '0.25rem',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                }}
-                                aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
+                                className="btn-secondary"
+                                onClick={() => { setMode('forgot'); setMessage(''); }}
+                                style={{ fontSize: '0.85rem' }}
                             >
-                                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                Esqueci minha senha
                             </button>
                         </div>
-                    </div>
+                    )}
                     <button type="submit" className="btn-primary-action" disabled={isLoading}>
                         {isLoading ? <Loader2 className="animate-spin" /> : (
                             mode === 'login' ? (
                                 <><LogIn size={18} /> Entrar</>
+                            ) : mode === 'forgot' ? (
+                                'Enviar link de recuperação'
                             ) : (
                                 <><UserPlus size={18} /> Criar Conta</>
                             )
@@ -119,13 +138,19 @@ export const Login: React.FC = () => {
                 </form>
 
                 <div style={{ textAlign: 'center', marginTop: '1rem' }}>
-                    {mode === 'login' ? (
+                    {mode === 'login' && (
                         <button className="btn-secondary" onClick={() => { setMode('signup'); setMessage(''); }}>
                             Não tem conta? Cadastre-se
                         </button>
-                    ) : (
+                    )}
+                    {mode === 'signup' && (
                         <button className="btn-secondary" onClick={() => { setMode('login'); setMessage(''); }}>
                             Já tem conta? Faça login
+                        </button>
+                    )}
+                    {mode === 'forgot' && (
+                        <button className="btn-secondary" onClick={() => { setMode('login'); setMessage(''); }}>
+                            Voltar para o login
                         </button>
                     )}
                 </div>
