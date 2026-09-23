@@ -17,6 +17,7 @@ import { ResetPasswordModal } from './components/ResetPasswordModal';
 import { Breadcrumbs } from './components/Breadcrumbs';
 import { ReportsPanel } from './components/ReportsPanel';
 import { GlobalPastoralMap } from './components/Governance/GlobalPastoralMap';
+import { LocalGovernancePanel } from './components/Governance/LocalGovernancePanel';
 import { UserManagement } from './components/UserManagement';
 import { AppointmentWizard } from './components/AppointmentWizard';
 import { PriestAgenda } from './components/PriestAgenda';
@@ -70,6 +71,7 @@ const getPageTitle = (level: Level, tab: string): string => {
     pastoralis: 'Pastoralis',
     administratio: 'Administratio',
     reports: 'Relatórios',
+    'governance-local': 'Estratégia Pastoral',
     'global-map': 'Mapa Pastoral Global',
     users: 'Gestão de Usuários',
     settings: 'Configurações',
@@ -92,6 +94,7 @@ const getPageSubtitle = (level: Level, tab: string): string => {
     pastoralis: 'Diretório de fiéis e famílias.',
     administratio: 'Gestão financeira e patrimonial.',
     reports: 'Relatórios gerenciais e exportação.',
+    'governance-local': 'Análise de cobertura e eficiência territorial da paróquia.',
     'global-map': 'Visão geográfica das comunidades.',
     users: 'Gerenciamento de acessos e permissões.',
     settings: 'Configurações do sistema.',
@@ -278,6 +281,7 @@ function App() {
                 </>
               )}
               {activeTab === 'priest-agenda' && <PriestAgenda />}
+              {activeTab === 'governance-local' && <LocalGovernancePanel />}
               {activeTab === 'missio' && <MatrizDashboard />}
               {activeTab === 'sacramenta' && activeTenant && (
                 <div className="sacramenta-container">

@@ -646,6 +646,30 @@ export const ignisApi = {
                 activeAppointments: Number(row.active_appointments),
                 totalAppointments: Number(row.total_appointments)
             }));
+        },
+        getLocalStats: async (tenantId: string) => {
+            const { data: communities, error: cError } = await supabase
+                .from('sub_tenants')
+                .select('*')
+                .eq('tenant_id', tenantId);
+
+            const { data: appointments, error: aError } = await supabase
+                .from('appointments')
+                .select('*')
+                .eq('tenant_id', tenantId);
+
+            if (cError || aError) throw cError || aError;
+
+            return (communities || []).map((c: any) => {
+                const cAppts = (appointments || []).filter((a: any) => a.sub_tenant_id === c.id);
+                return {
+                    id: c.id,
+                    name: c.name,
+                    activeAppointments: cAppts.filter((a: any) => a.status === 'pending' || a.status === 'confirmed').length,
+                    totalAppointments: cAppts.length,
+                    efficiency: Math.round((cAppts.filter((a: any) => a.status === 'completed').length / (cAppts.length || 1)) * 100)
+                };
+            });
         }
     },
     notifications: {
