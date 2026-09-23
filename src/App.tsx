@@ -13,9 +13,11 @@ import type { SacramentType } from './components/Sacramenta/SacramentRegistry';
 import { PeopleDirectory } from './components/Pastoralis/PeopleDirectory';
 import { PastoralGroups } from './components/Pastoralis/PastoralGroups';
 import { Login } from './components/Login';
+import { ResetPasswordModal } from './components/ResetPasswordModal';
 import { Breadcrumbs } from './components/Breadcrumbs';
 import { ReportsPanel } from './components/ReportsPanel';
 import { GlobalPastoralMap } from './components/Governance/GlobalPastoralMap';
+import { LocalGovernancePanel } from './components/Governance/LocalGovernancePanel';
 import { UserManagement } from './components/UserManagement';
 import { AppointmentWizard } from './components/AppointmentWizard';
 import { PriestAgenda } from './components/PriestAgenda';
@@ -69,6 +71,7 @@ const getPageTitle = (level: Level, tab: string): string => {
     pastoralis: 'Pastoralis',
     administratio: 'Administratio',
     reports: 'Relatórios',
+    'governance-local': 'Estratégia Pastoral',
     'global-map': 'Mapa Pastoral Global',
     users: 'Gestão de Usuários',
     settings: 'Configurações',
@@ -91,6 +94,7 @@ const getPageSubtitle = (level: Level, tab: string): string => {
     pastoralis: 'Diretório de fiéis e famílias.',
     administratio: 'Gestão financeira e patrimonial.',
     reports: 'Relatórios gerenciais e exportação.',
+    'governance-local': 'Análise de cobertura e eficiência territorial da paróquia.',
     'global-map': 'Visão geográfica das comunidades.',
     users: 'Gerenciamento de acessos e permissões.',
     settings: 'Configurações do sistema.',
@@ -114,7 +118,7 @@ const getTabFromUrl = (): string => {
 
 function App() {
   const { activeTenant, allTenants, switchTenant, isLoading: isTenantLoading } = useTenant();
-  const { user, profile, isLoading: isAuthLoading, signOut } = useAuth();
+  const { user, profile, isLoading: isAuthLoading, signOut, isRecoveringPassword } = useAuth();
 
   const userRole = profile?.role || 'fiel';
   const allowedLevels = levelsByRole[userRole] || ['fiel'];
@@ -277,6 +281,7 @@ function App() {
                 </>
               )}
               {activeTab === 'priest-agenda' && <PriestAgenda />}
+              {activeTab === 'governance-local' && <LocalGovernancePanel />}
               {activeTab === 'missio' && <MatrizDashboard />}
               {activeTab === 'sacramenta' && activeTenant && (
                 <div className="sacramenta-container">
@@ -360,6 +365,10 @@ function App() {
     }
 
     return <div className="loading-state">Iniciando IGNIS...</div>;
+  }
+
+  if (isRecoveringPassword) {
+    return <ResetPasswordModal onClose={() => window.location.reload()} />;
   }
 
   if (!user) {

@@ -14,6 +14,7 @@ import {
   Sun,
   Moon,
   UserCog,
+  Shield,
 } from 'lucide-react';
 import './Sidebar.css';
 
@@ -45,6 +46,7 @@ const navGroups: NavGroup[] = [
     items: [
       { icon: Calendar, label: 'Agenda do Padre', id: 'priest-agenda' },
       { icon: FileBarChart, label: 'Relatórios', id: 'reports' },
+      { icon: Shield, label: 'Estratégia Pastoral', id: 'governance-local' },
     ],
   },
   {
@@ -88,6 +90,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onTabChange, userLe
     if (itemId === 'users') return userLevel === 'super' || userLevel === 'matriz';
     if (itemId === 'settings') return userLevel === 'super';
     if (itemId === 'reports') return userLevel === 'super' || userLevel === 'matriz';
+    if (itemId === 'governance-local') return userLevel === 'matriz';
     if (moduleItems.includes(itemId)) {
       return activeTenant?.active_modules?.includes(itemId) ?? false;
     }
